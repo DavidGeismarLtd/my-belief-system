@@ -1,0 +1,112 @@
+<div class="min-h-screen bg-gray-50 py-12 px-4">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Your Value Portrait</h1>
+      <p class="text-xl text-gray-600">Based on your answers, here's what you value politically</p>
+    </div>
+
+    <!-- Radar Chart Placeholder -->
+    <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+      <div class="text-center">
+        <div class="w-full max-w-2xl mx-auto bg-gray-100 rounded-lg p-12 mb-4">
+          <svg viewBox="0 0 400 400" class="w-full h-auto">
+            <!-- Radar Chart Background -->
+            <circle cx="200" cy="200" r="150" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+            <circle cx="200" cy="200" r="100" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+            <circle cx="200" cy="200" r="50" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+            
+            <!-- Axes -->
+            <% 8.times do |i| %>
+              <% angle = (i * 45 - 90) * Math::PI / 180 %>
+              <% x = 200 + 150 * Math.cos(angle) %>
+              <% y = 200 + 150 * Math.sin(angle) %>
+              <line x1="200" y1="200" x2="<%= x %>" y2="<%= y %>" stroke="#E5E7EB" stroke-width="1"/>
+            <% end %>
+            
+            <!-- Data Polygon -->
+            <% points = @portrait[:dimensions].map.with_index do |dim, i| 
+              angle = (i * 45 - 90) * Math::PI / 180
+              radius = (dim[:position].abs / 100.0) * 150
+              x = 200 + radius * Math.cos(angle)
+              y = 200 + radius * Math.sin(angle)
+              "#{x},#{y}"
+            end.join(" ") %>
+            <polygon points="<%= points %>" fill="rgba(59, 130, 246, 0.3)" stroke="#3B82F6" stroke-width="2"/>
+            
+            <!-- Data Points -->
+            <% @portrait[:dimensions].each_with_index do |dim, i| %>
+              <% angle = (i * 45 - 90) * Math::PI / 180 %>
+              <% radius = (dim[:position].abs / 100.0) * 150 %>
+              <% x = 200 + radius * Math.cos(angle) %>
+              <% y = 200 + radius * Math.sin(angle) %>
+              <circle cx="<%= x %>" cy="<%= y %>" r="4" fill="#3B82F6"/>
+            <% end %>
+          </svg>
+        </div>
+        <p class="text-sm text-gray-500">Interactive radar chart showing your position on 8 political dimensions</p>
+      </div>
+    </div>
+
+    <!-- Dimensions List -->
+    <div class="space-y-4 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-6">Your Values Breakdown</h2>
+      
+      <% @portrait[:dimensions].each do |dimension| %>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-3"><%= dimension[:name] %></h3>
+          
+          <!-- Position Indicator -->
+          <div class="mb-4">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+              <span><%= dimension[:left_pole] %></span>
+              <span><%= dimension[:right_pole] %></span>
+            </div>
+            <div class="relative h-2 bg-gray-200 rounded-full">
+              <% position_percent = ((dimension[:position] + 100) / 2.0).round %>
+              <div class="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-blue-600 rounded-full" 
+                   style="left: calc(<%= position_percent %>% - 8px)"></div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-2 gap-4 mb-3">
+            <div>
+              <span class="text-sm text-gray-600">Strength:</span>
+              <span class="font-semibold text-gray-900">
+                <% if dimension[:intensity] > 75 %>Strong<% elsif dimension[:intensity] > 50 %>Moderate<% else %>Weak<% end %>
+                (<%= (dimension[:intensity] / 100.0).round(2) %>)
+              </span>
+            </div>
+            <div>
+              <span class="text-sm text-gray-600">Confidence:</span>
+              <span class="font-semibold text-gray-900">
+                <% if dimension[:confidence] > 80 %>High<% elsif dimension[:confidence] > 60 %>Medium<% else %>Low<% end %>
+                (<%= (dimension[:confidence] / 100.0).round(2) %>)
+              </span>
+            </div>
+          </div>
+
+          <!-- Lean Direction -->
+          <p class="text-gray-700">
+            <span class="font-medium">You lean toward:</span>
+            <% if dimension[:position] < -20 %>
+              <span class="text-blue-600 font-semibold"><%= dimension[:left_pole] %></span>
+            <% elsif dimension[:position] > 20 %>
+              <span class="text-blue-600 font-semibold"><%= dimension[:right_pole] %></span>
+            <% else %>
+              <span class="text-gray-600 font-semibold">Center/Balanced</span>
+            <% end %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- CTAs -->
+    <div class="flex gap-4 justify-center">
+      <%= link_to "View My Dashboard", dashboard_path, class: "bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors" %>
+      <%= link_to "Refine My Values", onboarding_path, class: "bg-white text-gray-700 px-8 py-3 rounded-lg font-semibold border-2 border-gray-300 hover:border-gray-400 transition-colors" %>
+    </div>
+  </div>
+</div>
+

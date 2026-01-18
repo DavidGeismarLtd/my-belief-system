@@ -1,0 +1,132 @@
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">My Value Portrait</h1>
+          <p class="text-gray-600">Created <%= time_ago_in_words(@portrait[:created_at]) %> ago</p>
+        </div>
+        <div class="flex gap-3">
+          <%= link_to "← Dashboard", dashboard_path, class: "text-blue-600 hover:text-blue-700 font-medium" %>
+          <%= link_to "Refine", onboarding_path, class: "bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Radar Chart -->
+    <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+      <h2 class="text-xl font-semibold text-gray-900 mb-6 text-center">Your Political Values at a Glance</h2>
+      <div class="bg-gray-100 rounded-lg p-8">
+        <svg viewBox="0 0 400 400" class="w-full h-auto max-w-2xl mx-auto">
+          <!-- Radar Chart Background -->
+          <circle cx="200" cy="200" r="150" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+          <circle cx="200" cy="200" r="100" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+          <circle cx="200" cy="200" r="50" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+          
+          <!-- Axes -->
+          <% 8.times do |i| %>
+            <% angle = (i * 45 - 90) * Math::PI / 180 %>
+            <% x = 200 + 150 * Math.cos(angle) %>
+            <% y = 200 + 150 * Math.sin(angle) %>
+            <line x1="200" y1="200" x2="<%= x %>" y2="<%= y %>" stroke="#E5E7EB" stroke-width="1"/>
+          <% end %>
+          
+          <!-- Data Polygon -->
+          <% points = @portrait[:dimensions].map.with_index do |dim, i| 
+            angle = (i * 45 - 90) * Math::PI / 180
+            radius = ((dim[:position] + 100) / 200.0) * 150
+            x = 200 + radius * Math.cos(angle)
+            y = 200 + radius * Math.sin(angle)
+            "#{x},#{y}"
+          end.join(" ") %>
+          <polygon points="<%= points %>" fill="rgba(59, 130, 246, 0.3)" stroke="#3B82F6" stroke-width="2"/>
+          
+          <!-- Data Points -->
+          <% @portrait[:dimensions].each_with_index do |dim, i| %>
+            <% angle = (i * 45 - 90) * Math::PI / 180 %>
+            <% radius = ((dim[:position] + 100) / 200.0) * 150 %>
+            <% x = 200 + radius * Math.cos(angle) %>
+            <% y = 200 + radius * Math.sin(angle) %>
+            <circle cx="<%= x %>" cy="<%= y %>" r="4" fill="#3B82F6"/>
+          <% end %>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Detailed Dimensions -->
+    <div class="space-y-6">
+      <h2 class="text-2xl font-semibold text-gray-900">Detailed Breakdown</h2>
+      
+      <% @portrait[:dimensions].each do |dimension| %>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h3 class="text-xl font-semibold text-gray-900 mb-4"><%= dimension[:name] %></h3>
+          
+          <!-- Position Indicator -->
+          <div class="mb-4">
+            <div class="flex justify-between text-sm text-gray-600 mb-2">
+              <span class="font-medium"><%= dimension[:left_pole] %></span>
+              <span class="font-medium"><%= dimension[:right_pole] %></span>
+            </div>
+            <div class="relative h-3 bg-gradient-to-r from-blue-500 via-gray-200 to-red-500 rounded-full">
+              <% position_percent = ((dimension[:position] + 100) / 2.0).round %>
+              <div class="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-gray-900 rounded-full border-2 border-white shadow-lg" 
+                   style="left: calc(<%= position_percent %>% - 10px)"></div>
+            </div>
+            <div class="text-center mt-2">
+              <span class="text-sm font-medium text-gray-700">Position: <%= dimension[:position] %></span>
+            </div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-3 gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
+            <div class="text-center">
+              <div class="text-sm text-gray-600 mb-1">Lean</div>
+              <div class="font-semibold text-gray-900">
+                <% if dimension[:position] < -20 %>
+                  <%= dimension[:left_pole].split(' ').first %>
+                <% elsif dimension[:position] > 20 %>
+                  <%= dimension[:right_pole].split(' ').first %>
+                <% else %>
+                  Balanced
+                <% end %>
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-600 mb-1">Intensity</div>
+              <div class="font-semibold text-gray-900">
+                <% if dimension[:intensity] > 75 %>Strong
+                <% elsif dimension[:intensity] > 50 %>Moderate
+                <% else %>Weak<% end %>
+                (<%= (dimension[:intensity] / 100.0).round(2) %>)
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm text-gray-600 mb-1">Confidence</div>
+              <div class="font-semibold text-gray-900">
+                <% if dimension[:confidence] > 80 %>High
+                <% elsif dimension[:confidence] > 60 %>Medium
+                <% else %>Low<% end %>
+                (<%= (dimension[:confidence] / 100.0).round(2) %>)
+              </div>
+            </div>
+          </div>
+
+          <!-- Explanation -->
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+            <p class="text-sm text-gray-700">
+              <span class="font-semibold">Why we think this:</span>
+              <%= dimension[:explanation] %>
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 text-center">
+      <%= link_to "See How Politicians Align", dashboard_path, class: "inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors" %>
+    </div>
+  </div>
+</div>
+

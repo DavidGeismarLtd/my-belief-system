@@ -1,0 +1,77 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
+  <div class="max-w-3xl w-full">
+    <!-- Progress Bar -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-sm text-gray-600">Question <%= @question_number %> of <%= @total_questions %></span>
+        <span class="text-sm text-gray-600"><%= ((@question_number.to_f / @total_questions) * 100).round %>%</span>
+      </div>
+      <div class="w-full bg-gray-200 rounded-full h-2">
+        <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: <%= ((@question_number.to_f / @total_questions) * 100).round %>%"></div>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="bg-white rounded-lg shadow-sm p-8 mb-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
+        <%= @question[:text] %>
+      </h2>
+
+      <%= form_with url: onboarding_answer_path, method: :post, class: "space-y-4" do |f| %>
+        <%= f.hidden_field :question_number, value: @question_number %>
+
+        <% if @question[:type] == "multiple_choice" %>
+          <!-- Multiple Choice Options -->
+          <div class="space-y-3">
+            <% @question[:options].each_with_index do |option, index| %>
+              <button type="submit" name="answer_value" value="<%= index %>"
+                      class="w-full text-left px-6 py-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all">
+                <span class="text-gray-800"><%= option %></span>
+              </button>
+            <% end %>
+          </div>
+
+        <% elsif @question[:type] == "slider" %>
+          <!-- Slider -->
+          <div class="py-8">
+            <div class="flex justify-between mb-4 text-sm text-gray-600">
+              <span><%= @question[:left_label] %></span>
+              <span><%= @question[:right_label] %></span>
+            </div>
+            <input type="range" name="answer_value" min="0" max="100" value="50"
+                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                   id="slider-<%= @question_number %>">
+            <div class="text-center mt-4">
+              <span class="text-lg font-semibold text-gray-700" id="slider-value-<%= @question_number %>">50</span>
+            </div>
+            <div class="mt-6">
+              <%= f.submit "Next", class: "w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer" %>
+            </div>
+          </div>
+
+          <script>
+            (function() {
+              const slider = document.getElementById('slider-<%= @question_number %>');
+              const valueDisplay = document.getElementById('slider-value-<%= @question_number %>');
+
+              slider.addEventListener('input', function() {
+                valueDisplay.textContent = this.value;
+              });
+            })();
+          </script>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Navigation -->
+    <div class="flex justify-between items-center">
+      <% if @question_number > 1 %>
+        <%= link_to "← Back", onboarding_question_path(@question_number - 1), class: "text-gray-600 hover:text-gray-900" %>
+      <% else %>
+        <div></div>
+      <% end %>
+
+      <%= link_to "Skip", onboarding_question_path(@question_number + 1), class: "text-gray-600 hover:text-gray-900" %>
+    </div>
+  </div>
+</div>

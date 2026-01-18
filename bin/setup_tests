@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+require "fileutils"
+
+# Path to your application root.
+APP_ROOT = File.expand_path("..", __dir__)
+
+def system!(*args)
+  system(*args, exception: true)
+end
+
+FileUtils.chdir APP_ROOT do
+  puts "\n== Installing dependencies =="
+  system! "gem install bundler --conservative"
+  system("bundle check") || system!("bundle install")
+
+  puts "\n== Preparing test database =="
+  system! "bin/rails db:create RAILS_ENV=test"
+  system! "bin/rails db:migrate RAILS_ENV=test"
+
+  puts "\n== Running specs =="
+  system! "bundle exec rspec --format documentation"
+
+  puts "\n== All tests complete! =="
+end
+
