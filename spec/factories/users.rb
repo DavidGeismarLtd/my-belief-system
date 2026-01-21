@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :user do
     sequence(:email) { |n| "user#{n}@example.com" }
     name { "Test User" }
+    country { "United States" }
     encrypted_password { BCrypt::Password.create('password123') }
     onboarding_completed { false }
     onboarding_progress { 0 }
@@ -25,4 +26,3 @@ FactoryBot.define do
     end
   end
 end
-

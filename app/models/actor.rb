@@ -1,15 +1,15 @@
 class Actor < ApplicationRecord
   # Constants
   ACTOR_TYPES = %w[party personality organization].freeze
-  
+
   # Associations
   has_many :interventions, dependent: :destroy
-  
+
   # Validations
   validates :name, presence: true
   validates :actor_type, presence: true, inclusion: { in: ACTOR_TYPES }
   validates :country, presence: true
-  
+
   # Scopes
   scope :active, -> { where(active: true) }
   scope :by_country, ->(country) { where(country: country) }
@@ -17,30 +17,40 @@ class Actor < ApplicationRecord
   scope :personalities, -> { where(actor_type: 'personality') }
   scope :organizations, -> { where(actor_type: 'organization') }
   scope :recent, -> { order(created_at: :desc) }
-  
+
   # Instance Methods
   def party?
     actor_type == 'party'
   end
-  
+
   def personality?
     actor_type == 'personality'
   end
-  
+
   def organization?
     actor_type == 'organization'
   end
-  
+
+  def display_type
+    actor_type.capitalize
+  end
+
+  def initials
+    return '' if name.blank?
+
+    name.split.map { |word| word[0] }.join.upcase
+  end
+
   def recent_interventions(limit = 10)
     interventions.active.order(published_at: :desc).limit(limit)
   end
-  
+
   def avatar_url
     image_url.presence || default_avatar_url
   end
-  
+
   private
-  
+
   def default_avatar_url
     # Placeholder avatar based on actor type
     case actor_type
@@ -53,4 +63,3 @@ class Actor < ApplicationRecord
     end
   end
 end
-

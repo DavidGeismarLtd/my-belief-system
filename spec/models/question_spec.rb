@@ -104,12 +104,10 @@ RSpec.describe Question, type: :model do
       end
     end
 
-    context 'when answers have no value' do
+    context 'when question has no answers' do
       it 'returns nil' do
-        # For direct_value questions, we need a valid value, so let's test with a different question type
-        question_without_value = create(:question, question_type: 'tradeoff_slider')
-        create(:user_answer, question: question_without_value, answer_data: { left_value: 50, right_value: 50 })
-        expect(question_without_value.average_answer_value).to be_nil
+        question_without_answers = create(:question, question_type: 'direct_value')
+        expect(question_without_answers.average_answer_value).to be_nil
       end
     end
   end

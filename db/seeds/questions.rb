@@ -1,7 +1,11 @@
 # Questions Seed Data
-# 24 onboarding questions across 8 dimensions (3 per dimension)
+# 24 universal onboarding questions across 8 dimensions (3 per dimension)
+# These questions apply to all countries
 
-puts "  Creating questions..."
+puts "  Creating universal questions..."
+
+# Clear existing questions
+Question.destroy_all
 
 # Helper to find dimension by key
 def find_dimension(key)
@@ -34,7 +38,7 @@ questions = [
     position: 3,
     difficulty_score: 3
   },
-  
+
   # Economic Equality vs Free Markets (3 questions)
   {
     dimension: 'economic_equality',
@@ -60,7 +64,7 @@ questions = [
     position: 6,
     difficulty_score: 2
   },
-  
+
   # Tradition vs Progress (3 questions)
   {
     dimension: 'tradition_progress',
@@ -86,7 +90,7 @@ questions = [
     position: 9,
     difficulty_score: 3
   },
-  
+
   # Nationalism vs Globalism (3 questions)
   {
     dimension: 'nationalism_globalism',
@@ -112,7 +116,7 @@ questions = [
     position: 12,
     difficulty_score: 2
   },
-  
+
   # Security vs Privacy (3 questions)
   {
     dimension: 'security_privacy',
@@ -138,7 +142,7 @@ questions = [
     position: 15,
     difficulty_score: 3
   },
-  
+
   # Meritocracy vs Equity (3 questions)
   {
     dimension: 'meritocracy_equity',
@@ -168,13 +172,19 @@ questions = [
 
 questions.each do |q_data|
   dimension = find_dimension(q_data.delete(:dimension))
-  question = Question.find_or_initialize_by(
+  Question.create!(
     value_dimension: dimension,
-    position: q_data[:position]
+    text: q_data[:text],
+    question_type: q_data[:question_type],
+    options: q_data[:options],
+    position: q_data[:position],
+    difficulty_score: q_data[:difficulty_score],
+    country: nil,
+    is_universal: true,
+    active: true
   )
-  question.update!(q_data)
-  puts "    ✓ Q#{question.position}: #{question.text.truncate(60)}"
 end
 
-puts "  ✅ Created #{Question.count} questions"
+puts "    ✓ Created #{questions.count} universal questions"
 
+puts "  ✅ Created #{Question.count} questions"

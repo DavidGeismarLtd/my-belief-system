@@ -73,4 +73,5 @@ end
 group :test do
   gem "shoulda-matchers", "~> 6.4"
   gem "database_cleaner-active_record", "~> 2.2"
+  gem "rails-controller-testing"
 end

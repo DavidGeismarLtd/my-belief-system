@@ -1,3 +1,8 @@
+<%
+  # Get previously selected answer for this question
+  @selected_answer = session.dig(:answers, @question.id.to_s)
+%>
+
 <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
   <div class="max-w-3xl w-full">
     <!-- Progress Bar -->
@@ -14,52 +19,152 @@
     <!-- Question Card -->
     <div class="bg-white rounded-lg shadow-sm p-8 mb-6">
       <h2 class="text-2xl font-semibold text-gray-900 mb-8 text-center">
-        <%= @question[:text] %>
+        <%= @question.text %>
       </h2>
 
-      <%= form_with url: onboarding_answer_path, method: :post, class: "space-y-4" do |f| %>
-        <%= f.hidden_field :question_number, value: @question_number %>
+      <% if @question.value_dimension %>
+        <p class="text-sm text-gray-500 text-center mb-6">
+          <%= @question.value_dimension.name %>
+        </p>
+      <% end %>
 
-        <% if @question[:type] == "multiple_choice" %>
-          <!-- Multiple Choice Options -->
-          <div class="space-y-3">
-            <% @question[:options].each_with_index do |option, index| %>
-              <button type="submit" name="answer_value" value="<%= index %>"
-                      class="w-full text-left px-6 py-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all">
-                <span class="text-gray-800"><%= option %></span>
+      <%= form_with url: onboarding_answer_path, method: :post, id: "answer-form", class: "space-y-4" do |f| %>
+        <%= f.hidden_field :question_number, value: @question_number %>
+        <%= f.hidden_field :answer_value, id: "selected-answer-value", value: @selected_answer %>
+
+        <% if @question.direct_value? %>
+          <!-- Direct Value (1-5 scale) -->
+          <div class="space-y-3" id="answer-options">
+            <% [1, 2, 3, 4, 5].each do |value| %>
+              <button type="button"
+                      data-answer-value="<%= value %>"
+                      class="answer-option w-full text-left px-6 py-4 border-2 rounded-lg transition-all <%= @selected_answer.to_s == value.to_s ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50' %>">
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-800 font-medium"><%= value %></span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm text-gray-500">
+                      <%= case value
+                          when 1 then "Strongly Disagree"
+                          when 2 then "Disagree"
+                          when 3 then "Neutral"
+                          when 4 then "Agree"
+                          when 5 then "Strongly Agree"
+                          end %>
+                    </span>
+                    <% if @selected_answer.to_s == value.to_s %>
+                      <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                      </svg>
+                    <% end %>
+                  </div>
+                </div>
               </button>
             <% end %>
           </div>
 
-        <% elsif @question[:type] == "slider" %>
-          <!-- Slider -->
+        <% elsif @question.policy_preference? %>
+          <!-- Policy Preference (Left/Right) -->
+          <div class="space-y-3" id="answer-options">
+            <button type="button"
+                    data-answer-value="left"
+                    class="answer-option w-full text-left px-6 py-4 border-2 rounded-lg transition-all <%= @selected_answer == 'left' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50' %>">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-gray-800 font-medium">Left Position</span>
+                  <% if @question.options&.dig('left_option').present? %>
+                    <p class="text-sm text-gray-600 mt-1"><%= @question.options['left_option'] %></p>
+                  <% end %>
+                </div>
+                <% if @selected_answer == 'left' %>
+                  <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                <% end %>
+              </div>
+            </button>
+            <button type="button"
+                    data-answer-value="right"
+                    class="answer-option w-full text-left px-6 py-4 border-2 rounded-lg transition-all <%= @selected_answer == 'right' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50' %>">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-gray-800 font-medium">Right Position</span>
+                  <% if @question.options&.dig('right_option').present? %>
+                    <p class="text-sm text-gray-600 mt-1"><%= @question.options['right_option'] %></p>
+                  <% end %>
+                </div>
+                <% if @selected_answer == 'right' %>
+                  <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                <% end %>
+              </div>
+            </button>
+          </div>
+
+        <% elsif @question.tradeoff_slider? %>
+          <!-- Tradeoff Slider (0-100) -->
           <div class="py-8">
             <div class="flex justify-between mb-4 text-sm text-gray-600">
-              <span><%= @question[:left_label] %></span>
-              <span><%= @question[:right_label] %></span>
+              <span class="font-medium"><%= @question.options&.dig('left_option') || "Left" %></span>
+              <span class="font-medium"><%= @question.options&.dig('right_option') || "Right" %></span>
             </div>
-            <input type="range" name="answer_value" min="0" max="100" value="50"
+            <input type="range" min="0" max="100" value="<%= @selected_answer || 50 %>"
                    class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                    id="slider-<%= @question_number %>">
             <div class="text-center mt-4">
-              <span class="text-lg font-semibold text-gray-700" id="slider-value-<%= @question_number %>">50</span>
-            </div>
-            <div class="mt-6">
-              <%= f.submit "Next", class: "w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors cursor-pointer" %>
+              <span class="text-lg font-semibold text-gray-700" id="slider-value-<%= @question_number %>"><%= @selected_answer || 50 %></span>
             </div>
           </div>
 
-          <script>
-            (function() {
-              const slider = document.getElementById('slider-<%= @question_number %>');
-              const valueDisplay = document.getElementById('slider-value-<%= @question_number %>');
-
-              slider.addEventListener('input', function() {
-                valueDisplay.textContent = this.value;
-              });
-            })();
-          </script>
+        <% elsif @question.dilemma? %>
+          <!-- Dilemma (A/B choice) -->
+          <div class="space-y-3" id="answer-options">
+            <button type="button"
+                    data-answer-value="A"
+                    class="answer-option w-full text-left px-6 py-4 border-2 rounded-lg transition-all <%= @selected_answer == 'A' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50' %>">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-gray-800 font-medium">Option A</span>
+                  <% if @question.options&.dig('option_a').present? %>
+                    <p class="text-sm text-gray-600 mt-1"><%= @question.options['option_a'] %></p>
+                  <% end %>
+                </div>
+                <% if @selected_answer == 'A' %>
+                  <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                <% end %>
+              </div>
+            </button>
+            <button type="button"
+                    data-answer-value="B"
+                    class="answer-option w-full text-left px-6 py-4 border-2 rounded-lg transition-all <%= @selected_answer == 'B' ? 'border-blue-600 bg-blue-50' : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50' %>">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-gray-800 font-medium">Option B</span>
+                  <% if @question.options&.dig('option_b').present? %>
+                    <p class="text-sm text-gray-600 mt-1"><%= @question.options['option_b'] %></p>
+                  <% end %>
+                </div>
+                <% if @selected_answer == 'B' %>
+                  <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                  </svg>
+                <% end %>
+              </div>
+            </button>
+          </div>
         <% end %>
+
+        <!-- Next Button (shown for all question types) -->
+        <div class="mt-6">
+          <button type="submit"
+                  id="next-button"
+                  class="w-full px-6 py-3 rounded-lg font-semibold transition-all <%= @selected_answer.present? ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer' : 'bg-gray-300 text-gray-500 cursor-not-allowed' %>"
+                  <%= 'disabled' unless @selected_answer.present? %>>
+            Next
+          </button>
+        </div>
       <% end %>
     </div>
 
@@ -75,3 +180,95 @@
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  const form = document.getElementById('answer-form');
+  const hiddenInput = document.getElementById('selected-answer-value');
+  const nextButton = document.getElementById('next-button');
+  const answerOptions = document.querySelectorAll('.answer-option');
+  const slider = document.getElementById('slider-<%= @question_number %>');
+  const sliderValue = document.getElementById('slider-value-<%= @question_number %>');
+
+  // Function to enable/disable next button
+  function updateNextButton(hasAnswer) {
+    if (hasAnswer) {
+      nextButton.disabled = false;
+      nextButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+      nextButton.classList.add('bg-blue-600', 'text-white', 'hover:bg-blue-700', 'cursor-pointer');
+    } else {
+      nextButton.disabled = true;
+      nextButton.classList.remove('bg-blue-600', 'text-white', 'hover:bg-blue-700', 'cursor-pointer');
+      nextButton.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+    }
+  }
+
+  // Function to update selected state for button-based questions
+  function selectAnswer(selectedButton, value) {
+    // Remove selected state from all options
+    answerOptions.forEach(option => {
+      option.classList.remove('border-blue-600', 'bg-blue-50');
+      option.classList.add('border-gray-200');
+
+      // Remove checkmark if exists
+      const checkmark = option.querySelector('svg');
+      if (checkmark) {
+        checkmark.remove();
+      }
+    });
+
+    // Add selected state to clicked option
+    selectedButton.classList.remove('border-gray-200');
+    selectedButton.classList.add('border-blue-600', 'bg-blue-50');
+
+    // Add checkmark
+    const checkmarkHTML = `
+      <svg class="w-5 h-5 text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+      </svg>
+    `;
+
+    const container = selectedButton.querySelector('.flex.items-center.justify-between');
+    if (container && !container.querySelector('svg')) {
+      container.insertAdjacentHTML('beforeend', checkmarkHTML);
+    }
+
+    // Update hidden input
+    hiddenInput.value = value;
+
+    // Enable next button
+    updateNextButton(true);
+  }
+
+  // Handle button-based answer selection (direct_value, policy_preference, dilemma)
+  answerOptions.forEach(option => {
+    option.addEventListener('click', function(e) {
+      e.preventDefault();
+      const value = this.getAttribute('data-answer-value');
+      selectAnswer(this, value);
+    });
+  });
+
+  // Handle slider-based answer selection (tradeoff_slider)
+  if (slider) {
+    slider.addEventListener('input', function() {
+      sliderValue.textContent = this.value;
+      hiddenInput.value = this.value;
+      updateNextButton(true);
+    });
+
+    // If slider has a pre-selected value, enable the next button
+    if (hiddenInput.value) {
+      updateNextButton(true);
+    }
+  }
+
+  // Prevent form submission if no answer selected
+  form.addEventListener('submit', function(e) {
+    if (!hiddenInput.value) {
+      e.preventDefault();
+      return false;
+    }
+  });
+})();
+</script>
