@@ -2,6 +2,13 @@ require 'rails_helper'
 
 RSpec.describe OnboardingController, type: :controller do
   render_views
+
+  let(:user) { create(:user) }
+
+  before do
+    sign_in user
+  end
+
   describe 'GET #start' do
     it 'resets session answers and user_profile' do
       session[:answers] = { '1' => 'old_answer' }

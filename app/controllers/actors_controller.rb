@@ -1,110 +1,132 @@
 class ActorsController < ApplicationController
   def index
-    @actors = mock_all_actors
+    @actors = Actor.active.order(:name).map do |actor|
+      {
+        id: actor.id,
+        name: actor.name,
+        type: actor.display_type,
+        location: actor.country,
+        role: actor.role,
+        party: actor.party_affiliation
+      }
+    end
   end
 
   def show
-    @actor = mock_actor_detail(params[:id].to_i)
-    @user_portrait = mock_user_portrait
+    actor = Actor.find_by(id: params[:id])
+
+    if actor.nil?
+      redirect_to actors_path, alert: "Actor not found"
+      return
+    end
+
+    @actor = build_actor_detail(actor)
+    @user_portrait = build_user_portrait
   end
 
   private
 
-  def mock_all_actors
-    # Same as dashboard but without alignment scores
-    [
-      { id: 1, name: "Democratic Party", type: "Party", location: "National" },
-      { id: 2, name: "Republican Party", type: "Party", location: "National" },
-      { id: 3, name: "Joe Biden", type: "Personality", role: "President", party: "Democratic Party" },
-      { id: 4, name: "Donald Trump", type: "Personality", role: "Former President", party: "Republican Party" },
-      { id: 5, name: "Kamala Harris", type: "Personality", role: "Vice President", party: "Democratic Party" },
-      { id: 6, name: "Ron DeSantis", type: "Personality", role: "Governor of Florida", party: "Republican Party" },
-      { id: 7, name: "Bernie Sanders", type: "Personality", role: "Senator", party: "Independent" }
-    ]
-  end
-
-  def mock_actor_detail(id)
-    actors = {
-      1 => {
-        id: 1,
-        name: "Democratic Party",
-        type: "Party",
-        location: "National",
-        description: "One of the two major political parties in the United States",
-        program_url: "https://democrats.org/where-we-stand/party-platform/",
-        image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/DemocraticLogo.svg/200px-DemocraticLogo.svg.png",
-        alignment_score: 72,
-        dimensions: [
-          { name: "Individual Liberty vs Collective Authority", actor_position: -30, user_position: -45, alignment: 85 },
-          { name: "Economic Equality vs Free Market", actor_position: -60, user_position: -55, alignment: 92 },
-          { name: "Environmental Protection vs Economic Growth", actor_position: -70, user_position: -65, alignment: 94 },
-          { name: "National Sovereignty vs Global Cooperation", actor_position: 40, user_position: -20, alignment: 40 },
-          { name: "Traditional Values vs Progressive Values", actor_position: 50, user_position: 45, alignment: 90 },
-          { name: "Law & Order vs Criminal Justice Reform", actor_position: 35, user_position: 40, alignment: 88 },
-          { name: "Direct Democracy vs Representative Democracy", actor_position: -10, user_position: 15, alignment: 75 },
-          { name: "Meritocracy vs Equal Outcomes", actor_position: 45, user_position: 50, alignment: 90 }
-        ]
-      },
-      3 => {
-        id: 3,
-        name: "Joe Biden",
-        type: "Personality",
-        role: "President",
-        party: "Democratic Party",
-        description: "46th President of the United States",
-        image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Joe_Biden_presidential_portrait.jpg/200px-Joe_Biden_presidential_portrait.jpg",
-        alignment_score: 68,
-        interventions: [
-          {
-            type: "tweet",
-            platform: "twitter",
-            content: "We're building an economy from the bottom up and the middle out – not the top down.",
-            published_at: 2.days.ago,
-            source_url: "https://twitter.com/POTUS/status/example"
-          },
-          {
-            type: "speech",
-            platform: "press_release",
-            content: "Today, I'm announcing new measures to combat climate change and create millions of good-paying jobs in clean energy.",
-            published_at: 5.days.ago,
-            source_url: "https://whitehouse.gov/briefing-room/example"
-          },
-          {
-            type: "video",
-            platform: "youtube",
-            content: "State of the Union Address 2024 - Full Speech",
-            published_at: 1.week.ago,
-            source_url: "https://youtube.com/watch?v=example"
-          }
-        ],
-        dimensions: [
-          { name: "Individual Liberty vs Collective Authority", actor_position: -25, user_position: -45, alignment: 78 },
-          { name: "Economic Equality vs Free Market", actor_position: -45, user_position: -55, alignment: 85 },
-          { name: "Environmental Protection vs Economic Growth", actor_position: -55, user_position: -65, alignment: 87 },
-          { name: "National Sovereignty vs Global Cooperation", actor_position: 60, user_position: -20, alignment: 20 },
-          { name: "Traditional Values vs Progressive Values", actor_position: 30, user_position: 45, alignment: 82 },
-          { name: "Law & Order vs Criminal Justice Reform", actor_position: 50, user_position: 40, alignment: 85 },
-          { name: "Direct Democracy vs Representative Democracy", actor_position: -30, user_position: 15, alignment: 55 },
-          { name: "Meritocracy vs Equal Outcomes", actor_position: 35, user_position: 50, alignment: 82 }
-        ]
-      }
-    }
-
-    actors[id] || actors[1]
-  end
-
-  def mock_user_portrait
+  def build_actor_detail(actor)
     {
-      dimensions: [
-        { name: "Individual Liberty vs Collective Authority", position: -45 },
-        { name: "Economic Equality vs Free Market", position: -55 },
-        { name: "Environmental Protection vs Economic Growth", position: -65 },
-        { name: "National Sovereignty vs Global Cooperation", position: -20 },
-        { name: "Traditional Values vs Progressive Values", position: 45 },
-        { name: "Law & Order vs Criminal Justice Reform", position: 40 },
-        { name: "Direct Democracy vs Representative Democracy", position: 15 },
-        { name: "Meritocracy vs Equal Outcomes", position: 50 }
-      ]
+      id: actor.id,
+      name: actor.name,
+      type: actor.display_type,
+      location: actor.country,
+      role: actor.role,
+      party: actor.party_affiliation,
+      description: actor.description,
+      program_url: actor.program_url,
+      image_url: actor.avatar_url,
+      alignment_score: calculate_overall_alignment(actor),
+      dimensions: build_dimension_comparisons(actor),
+      interventions: actor.personality? ? build_interventions(actor) : nil
+    }.compact
+  end
+
+  def build_interventions(actor)
+    actor.recent_interventions(5).map do |intervention|
+      {
+        type: intervention.intervention_type,
+        platform: intervention.source_platform,
+        content: intervention.content,
+        published_at: intervention.published_at,
+        source_url: intervention.source_url
+      }
+    end
+  end
+
+  def build_dimension_comparisons(actor)
+    user_portraits = current_user.user_value_portraits.includes(:value_dimension)
+    actor_positions = get_actor_positions(actor)
+
+    ValueDimension.active.ordered.map do |dimension|
+      user_portrait = user_portraits.find { |p| p.value_dimension_id == dimension.id }
+      actor_position = actor_positions[dimension.id] || 0
+
+      user_position = user_portrait&.position || 0
+      alignment = calculate_dimension_alignment(user_position, actor_position)
+
+      {
+        name: dimension.name,
+        actor_position: actor_position.round,
+        user_position: user_position.round,
+        alignment: alignment
+      }
+    end
+  end
+
+  def build_user_portrait
+    user_portraits = current_user.user_value_portraits.includes(:value_dimension)
+
+    {
+      dimensions: ValueDimension.active.ordered.map do |dimension|
+        portrait = user_portraits.find { |p| p.value_dimension_id == dimension.id }
+        {
+          name: dimension.name,
+          position: portrait&.position&.round || 0
+        }
+      end
     }
+  end
+
+  def calculate_overall_alignment(actor)
+    user_portraits = current_user.user_value_portraits.includes(:value_dimension)
+    return 50 if user_portraits.empty?
+
+    actor_positions = get_actor_positions(actor)
+    total_weighted_alignment = 0
+    total_weight = 0
+
+    user_portraits.each do |user_portrait|
+      actor_position = actor_positions[user_portrait.value_dimension_id] || 0
+      alignment = calculate_dimension_alignment(user_portrait.position, actor_position)
+
+      # Weight by user's intensity and confidence
+      weight = (user_portrait.intensity || 50) * (user_portrait.confidence || 50) / 100.0
+      total_weighted_alignment += alignment * weight
+      total_weight += weight
+    end
+
+    return 50 if total_weight.zero?
+    (total_weighted_alignment / total_weight).round
+  end
+
+  def calculate_dimension_alignment(user_position, actor_position)
+    # Alignment formula: 1 - (|user_position - actor_position| / 200) * 100
+    # Positions are on -100 to 100 scale, so max difference is 200
+    difference = (user_position - actor_position).abs
+    alignment = (1 - (difference / 200.0)) * 100
+    alignment.round.clamp(0, 100)
+  end
+
+  def get_actor_positions(actor)
+    # For now, use metadata to store actor positions
+    # In the future, this will come from ActorValuePortrait model
+    positions = actor.metadata['value_positions'] || {}
+
+    # Convert string keys to integer keys if needed
+    positions.transform_keys do |key|
+      key.is_a?(String) ? key.to_i : key
+    end
   end
 end

@@ -3,7 +3,8 @@ FactoryBot.define do
     sequence(:email) { |n| "user#{n}@example.com" }
     name { "Test User" }
     country { "United States" }
-    encrypted_password { BCrypt::Password.create('password123') }
+    password { "password123" }
+    password_confirmation { "password123" }
     onboarding_completed { false }
     onboarding_progress { 0 }
     skipped_questions { [] }

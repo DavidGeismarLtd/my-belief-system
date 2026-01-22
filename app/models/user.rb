@@ -1,4 +1,9 @@
 class User < ApplicationRecord
+  # Devise modules
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable,
+         :trackable
+
   # Associations
   has_many :user_answers, dependent: :destroy
   has_many :answered_questions, through: :user_answers, source: :question
@@ -6,8 +11,6 @@ class User < ApplicationRecord
   has_many :value_dimensions, through: :user_value_portraits
 
   # Validations
-  validates :email, presence: true, uniqueness: { case_sensitive: false }
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :name, length: { maximum: 100 }
   validates :onboarding_progress, numericality: {
     only_integer: true,

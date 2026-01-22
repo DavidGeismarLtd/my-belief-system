@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe DashboardController, type: :controller do
+  let(:user) { create(:user) }
+
+  before do
+    @request.env["devise.mapping"] = Devise.mappings[:user]
+    sign_in user
+  end
+
   describe 'GET #index' do
     let!(:party) { create(:actor, :party, name: 'Democratic Party', active: true) }
     let!(:personality) { create(:actor, :personality, name: 'Joe Biden', active: true) }
@@ -154,4 +161,3 @@ RSpec.describe DashboardController, type: :controller do
     end
   end
 end
-
