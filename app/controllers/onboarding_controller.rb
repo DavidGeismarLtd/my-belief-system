@@ -73,9 +73,12 @@ class OnboardingController < ApplicationController
       # Skip if answer already exists
       next if current_user.user_answers.exists?(question_id: question_id)
 
+      question = Question.find(question_id)
+      normalized_value = normalize_answer_value(answer_value, question)
+
       current_user.user_answers.create!(
         question_id: question_id,
-        answer_data: { value: answer_value }
+        answer_data: { value: normalized_value }
       )
     end
 
@@ -155,5 +158,25 @@ class OnboardingController < ApplicationController
     end
 
     { dimensions: dimensions }
+  end
+
+  def normalize_answer_value(value, question)
+    # Convert string values to appropriate types based on question type
+    case question.question_type
+    when "direct_value"
+      # Convert to integer (1-5)
+      value.to_i
+    when "tradeoff_slider"
+      # Convert to integer (0-100)
+      value.to_i
+    when "policy_preference"
+      # Keep as string ('left' or 'right')
+      value.to_s
+    when "dilemma"
+      # Keep as string ('A' or 'B')
+      value.to_s
+    else
+      value
+    end
   end
 end

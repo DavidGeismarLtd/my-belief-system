@@ -1,63 +1,65 @@
-<div class="min-h-screen bg-gray-50 py-8 px-4">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">Your Alignment Dashboard</h1>
-      <p class="text-gray-600">See how political parties and personalities align with your values</p>
+    <div class="mb-8 sm:mb-12">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        Your Alignment Dashboard
+      </h1>
+      <p class="text-base sm:text-lg text-gray-600 max-w-2xl">
+        See how political parties and personalities align with your values
+      </p>
     </div>
 
     <!-- Quick Actions -->
-    <div class="mb-8 flex gap-4">
-      <%= link_to "View My Values", my_values_path, class: "text-blue-600 hover:text-blue-700 font-medium" %>
-      <span class="text-gray-300">|</span>
-      <%= link_to "Refine Portrait", onboarding_path, class: "text-blue-600 hover:text-blue-700 font-medium" %>
-      <span class="text-gray-300">|</span>
-      <%= link_to "Browse All Actors", actors_path, class: "text-blue-600 hover:text-blue-700 font-medium" %>
+    <div class="mb-8 sm:mb-10 flex flex-wrap gap-3 sm:gap-4">
+      <%= link_to "View My Values", my_values_path, class: "inline-flex items-center px-4 py-2 bg-white text-blue-600 hover:text-blue-700 font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-blue-100 hover:border-blue-200" %>
+      <%= link_to "Refine Portrait", onboarding_path, class: "inline-flex items-center px-4 py-2 bg-white text-purple-600 hover:text-purple-700 font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-purple-100 hover:border-purple-200" %>
+      <%= link_to "Browse All Actors", actors_path, class: "inline-flex items-center px-4 py-2 bg-white text-gray-700 hover:text-gray-900 font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 hover:border-gray-300" %>
     </div>
 
     <!-- Alignment Legend -->
-    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
-      <div class="flex items-center gap-6 text-sm">
-        <span class="font-semibold text-gray-700">Alignment:</span>
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-md border border-gray-100 p-5 sm:p-6 mb-8">
+      <div class="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
+        <span class="font-semibold text-gray-800 text-base">Alignment Scale:</span>
         <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-green-500 rounded"></div>
-          <span class="text-gray-600">Strong (80-100%)</span>
+          <div class="w-4 h-4 bg-gradient-to-br from-green-400 to-green-600 rounded-full shadow-sm"></div>
+          <span class="text-gray-700 font-medium">Strong <span class="text-gray-500 font-normal">(80-100%)</span></span>
         </div>
         <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-blue-500 rounded"></div>
-          <span class="text-gray-600">Moderate (50-80%)</span>
+          <div class="w-4 h-4 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full shadow-sm"></div>
+          <span class="text-gray-700 font-medium">Moderate <span class="text-gray-500 font-normal">(60-80%)</span></span>
         </div>
         <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-amber-500 rounded"></div>
-          <span class="text-gray-600">Weak (30-50%)</span>
+          <div class="w-4 h-4 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full shadow-sm"></div>
+          <span class="text-gray-700 font-medium">Weak <span class="text-gray-500 font-normal">(40-60%)</span></span>
         </div>
         <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-red-500 rounded"></div>
-          <span class="text-gray-600">Misalignment (0-30%)</span>
+          <div class="w-4 h-4 bg-gradient-to-br from-red-400 to-red-600 rounded-full shadow-sm"></div>
+          <span class="text-gray-700 font-medium">Misalignment <span class="text-gray-500 font-normal">(0-40%)</span></span>
         </div>
       </div>
     </div>
 
     <!-- Actor Cards Grid -->
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
       <% @actors.each do |actor| %>
-        <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        <div class="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-gray-200 overflow-hidden transform hover:-translate-y-1">
           <!-- Card Header -->
-          <div class="p-6 border-b border-gray-200">
-            <div class="flex items-start gap-4 mb-2">
+          <div class="p-6 border-b border-gray-100 bg-gradient-to-br from-gray-50 to-white">
+            <div class="flex items-start gap-4">
               <!-- Actor Image -->
               <% if actor[:image_url] %>
-                <img src="<%= actor[:image_url] %>" alt="<%= actor[:name] %>" class="w-16 h-16 rounded-full object-cover flex-shrink-0">
+                <img src="<%= actor[:image_url] %>" alt="<%= actor[:name] %>" class="w-16 h-16 rounded-full object-cover flex-shrink-0 ring-2 ring-gray-100 group-hover:ring-blue-200 transition-all duration-300">
               <% else %>
-                <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                  <span class="text-2xl text-gray-500"><%= actor[:name][0] %></span>
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center flex-shrink-0 ring-2 ring-gray-100 group-hover:ring-blue-200 transition-all duration-300">
+                  <span class="text-2xl font-bold text-gray-700"><%= actor[:name][0] %></span>
                 </div>
               <% end %>
 
               <!-- Actor Info -->
-              <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900"><%= actor[:name] %></h3>
-                <p class="text-sm text-gray-600">
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-bold text-gray-900 mb-1 truncate group-hover:text-blue-600 transition-colors duration-200"><%= actor[:name] %></h3>
+                <p class="text-sm text-gray-600 font-medium">
                   <%= actor[:type] %>
                   <% if actor[:role] %> • <%= actor[:role] %><% end %>
                 </p>
@@ -65,47 +67,64 @@
 
               <!-- Trend Indicator -->
               <% if actor[:trend] == "up" %>
-                <span class="text-green-600 text-xl">↗</span>
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-50 flex items-center justify-center">
+                  <span class="text-green-600 text-lg font-bold">↗</span>
+                </div>
               <% elsif actor[:trend] == "down" %>
-                <span class="text-red-600 text-xl">↘</span>
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-red-50 flex items-center justify-center">
+                  <span class="text-red-600 text-lg font-bold">↘</span>
+                </div>
               <% else %>
-                <span class="text-gray-400 text-xl">→</span>
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center">
+                  <span class="text-gray-400 text-lg font-bold">→</span>
+                </div>
               <% end %>
             </div>
           </div>
 
           <!-- Alignment Score -->
           <div class="p-6">
-            <div class="mb-4">
-              <div class="flex items-baseline justify-between mb-2">
-                <span class="text-2xl font-bold
-                  <% if actor[:alignment_color] == 'green' %>text-green-600
-                  <% elsif actor[:alignment_color] == 'blue' %>text-blue-600
-                  <% elsif actor[:alignment_color] == 'amber' %>text-amber-600
-                  <% else %>text-red-600<% end %>">
-                  <%= actor[:alignment_score] %>%
+            <div class="mb-5">
+              <div class="flex items-baseline justify-between mb-3">
+                <div class="flex items-baseline gap-2">
+                  <span class="text-3xl font-bold
+                    <% if actor[:alignment_color] == 'green' %>text-green-600
+                    <% elsif actor[:alignment_color] == 'blue' %>text-blue-600
+                    <% elsif actor[:alignment_color] == 'amber' %>text-amber-600
+                    <% else %>text-red-600<% end %>">
+                    <%= actor[:alignment_score] %>%
+                  </span>
+                  <span class="text-sm text-gray-500 font-medium">match</span>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold
+                  <% if actor[:alignment_color] == 'green' %>bg-green-100 text-green-700
+                  <% elsif actor[:alignment_color] == 'blue' %>bg-blue-100 text-blue-700
+                  <% elsif actor[:alignment_color] == 'amber' %>bg-amber-100 text-amber-700
+                  <% else %>bg-red-100 text-red-700<% end %>">
+                  <%= actor[:alignment_label] %>
                 </span>
-                <span class="text-sm font-medium text-gray-600"><%= actor[:alignment_label] %></span>
               </div>
-              <div class="w-full bg-gray-200 rounded-full h-2">
-                <div class="h-2 rounded-full
-                  <% if actor[:alignment_color] == 'green' %>bg-green-500
-                  <% elsif actor[:alignment_color] == 'blue' %>bg-blue-500
-                  <% elsif actor[:alignment_color] == 'amber' %>bg-amber-500
-                  <% else %>bg-red-500<% end %>"
+              <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden shadow-inner">
+                <div class="h-3 rounded-full transition-all duration-500 ease-out
+                  <% if actor[:alignment_color] == 'green' %>bg-gradient-to-r from-green-400 to-green-600
+                  <% elsif actor[:alignment_color] == 'blue' %>bg-gradient-to-r from-blue-400 to-blue-600
+                  <% elsif actor[:alignment_color] == 'amber' %>bg-gradient-to-r from-amber-400 to-amber-600
+                  <% else %>bg-gradient-to-r from-red-400 to-red-600<% end %>"
                   style="width: <%= actor[:alignment_score] %>%"></div>
               </div>
             </div>
 
             <!-- Strong Alignment -->
             <% if actor[:strong_dimensions].any? %>
-              <div class="mb-3">
-                <p class="text-xs font-semibold text-gray-700 mb-1">Strong alignment on:</p>
-                <ul class="text-sm text-gray-600 space-y-1">
+              <div class="mb-4 p-3 bg-green-50 rounded-lg border border-green-100">
+                <p class="text-xs font-bold text-green-800 mb-2 uppercase tracking-wide">Strong Alignment</p>
+                <ul class="text-sm text-gray-700 space-y-1.5">
                   <% actor[:strong_dimensions].take(2).each do |dim| %>
-                    <li class="flex items-start">
-                      <span class="text-green-500 mr-1">•</span>
-                      <%= dim %>
+                    <li class="flex items-start gap-2">
+                      <svg class="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                      </svg>
+                      <span class="font-medium"><%= dim %></span>
                     </li>
                   <% end %>
                 </ul>
@@ -114,13 +133,15 @@
 
             <!-- Weak Alignment -->
             <% if actor[:weak_dimensions].any? %>
-              <div class="mb-4">
-                <p class="text-xs font-semibold text-gray-700 mb-1">Weak alignment on:</p>
-                <ul class="text-sm text-gray-600 space-y-1">
+              <div class="mb-5 p-3 bg-red-50 rounded-lg border border-red-100">
+                <p class="text-xs font-bold text-red-800 mb-2 uppercase tracking-wide">Weak Alignment</p>
+                <ul class="text-sm text-gray-700 space-y-1.5">
                   <% actor[:weak_dimensions].take(1).each do |dim| %>
-                    <li class="flex items-start">
-                      <span class="text-red-500 mr-1">•</span>
-                      <%= dim %>
+                    <li class="flex items-start gap-2">
+                      <svg class="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                      </svg>
+                      <span class="font-medium"><%= dim %></span>
                     </li>
                   <% end %>
                 </ul>
@@ -129,7 +150,7 @@
 
             <!-- Actions -->
             <div class="flex gap-2">
-              <%= link_to "View Details", actor_path(actor[:id]), class: "flex-1 text-center bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700 transition-colors" %>
+              <%= link_to "View Details", actor_path(actor[:id]), class: "flex-1 text-center bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2.5 rounded-lg text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-200" %>
             </div>
           </div>
         </div>
@@ -138,11 +159,13 @@
 
     <!-- Empty State (if no actors) -->
     <% if @actors.empty? %>
-      <div class="bg-white rounded-lg shadow-sm p-12 text-center">
-        <div class="text-6xl mb-4">🎯</div>
-        <h2 class="text-2xl font-semibold text-gray-900 mb-2">No actors tracked yet</h2>
-        <p class="text-gray-600 mb-6">Start tracking political parties and personalities to see alignment</p>
-        <%= link_to "Browse Actors", actors_path, class: "inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors" %>
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-12 sm:p-16 text-center">
+        <div class="text-7xl mb-6 animate-bounce">🎯</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">No actors tracked yet</h2>
+        <p class="text-base sm:text-lg text-gray-600 mb-8 max-w-md mx-auto">
+          Start tracking political parties and personalities to see how they align with your values
+        </p>
+        <%= link_to "Browse Actors", actors_path, class: "inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105" %>
       </div>
     <% end %>
   </div>

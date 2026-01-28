@@ -1,39 +1,39 @@
-<div class="min-h-screen bg-gray-50 py-8 px-4">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
   <div class="max-w-6xl mx-auto">
     <!-- Back Button -->
     <div class="mb-6">
-      <%= link_to "← Back to Dashboard", dashboard_path, class: "text-blue-600 hover:text-blue-700 font-medium" %>
+      <%= link_to "← Back to Dashboard", dashboard_path, class: "inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors" %>
     </div>
 
     <!-- Actor Header -->
-    <div class="bg-white rounded-lg shadow-sm p-8 mb-6">
-      <div class="flex items-start gap-6">
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10 mb-6">
+      <div class="flex flex-col sm:flex-row items-start gap-6">
         <!-- Actor Image -->
         <% if @actor[:image_url] %>
-          <img src="<%= @actor[:image_url] %>" alt="<%= @actor[:name] %>" class="w-24 h-24 rounded-full object-cover flex-shrink-0">
+          <img src="<%= @actor[:image_url] %>" alt="<%= @actor[:name] %>" class="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover flex-shrink-0 ring-4 ring-gray-100 shadow-lg">
         <% else %>
-          <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-            <span class="text-4xl text-gray-500"><%= @actor[:name][0] %></span>
+          <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center flex-shrink-0 ring-4 ring-gray-100 shadow-lg">
+            <span class="text-4xl sm:text-5xl font-bold text-gray-700"><%= @actor[:name][0] %></span>
           </div>
         <% end %>
 
         <!-- Actor Info -->
         <div class="flex-1">
-          <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @actor[:name] %></h1>
-          <p class="text-gray-600 mb-4">
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3"><%= @actor[:name] %></h1>
+          <p class="text-base sm:text-lg text-gray-600 mb-4 font-medium">
             <%= @actor[:type] %>
             <% if @actor[:role] %> • <%= @actor[:role] %><% end %>
             <% if @actor[:party] %> • <%= @actor[:party] %><% end %>
           </p>
           <% if @actor[:description] %>
-            <p class="text-gray-700 mb-4"><%= @actor[:description] %></p>
+            <p class="text-gray-700 mb-4 leading-relaxed"><%= @actor[:description] %></p>
           <% end %>
 
           <!-- Program Link for Parties/Organizations -->
           <% if @actor[:program_url] && (@actor[:type] == 'Party' || @actor[:type] == 'Organization') %>
-            <a href="<%= @actor[:program_url] %>" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
-              📄 View Official Program
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="<%= @actor[:program_url] %>" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors group">
+              <span>📄 View Official Program</span>
+              <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
               </svg>
             </a>
@@ -41,113 +41,214 @@
         </div>
 
         <!-- Alignment Score -->
-        <div class="text-right flex-shrink-0">
-          <div class="text-4xl font-bold text-blue-600 mb-1"><%= @actor[:alignment_score] %>%</div>
-          <div class="text-sm text-gray-600">Overall Alignment</div>
+        <div class="text-center sm:text-right flex-shrink-0 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
+          <div class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2"><%= @actor[:alignment_score] %>%</div>
+          <div class="text-sm font-semibold text-gray-600">Overall Alignment</div>
         </div>
       </div>
     </div>
 
     <!-- Tabs -->
-    <div class="bg-white rounded-lg shadow-sm mb-6">
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 mb-6" data-controller="tabs">
       <div class="border-b border-gray-200">
-        <nav class="flex">
-          <button class="px-6 py-4 text-sm font-medium text-blue-600 border-b-2 border-blue-600">
+        <nav class="flex flex-wrap">
+          <button data-action="click->tabs#switch" data-tabs-target="tab" data-tab-name="overview" class="px-6 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600 transition-colors">
             Overview
           </button>
-          <button class="px-6 py-4 text-sm font-medium text-gray-600 hover:text-gray-900">
-            Dimensions
+          <button data-action="click->tabs#switch" data-tabs-target="tab" data-tab-name="dimensions" class="px-6 py-4 text-sm font-bold text-gray-600 hover:text-gray-900 border-b-2 border-transparent transition-colors">
+            Detailed Analysis
           </button>
-          <button class="px-6 py-4 text-sm font-medium text-gray-600 hover:text-gray-900">
+          <button data-action="click->tabs#switch" data-tabs-target="tab" data-tab-name="timeline" class="px-6 py-4 text-sm font-bold text-gray-600 hover:text-gray-900 border-b-2 border-transparent transition-colors">
             Timeline
           </button>
         </nav>
       </div>
 
       <!-- Tab Content: Overview -->
-      <div class="p-8">
+      <div data-tabs-target="panel" data-panel-name="overview" class="p-6 sm:p-8 lg:p-10">
         <!-- Comparison Chart -->
-        <div class="mb-8">
-          <h2 class="text-xl font-semibold text-gray-900 mb-6">Value Comparison</h2>
-          <div class="bg-gray-100 rounded-lg p-8">
-            <svg viewBox="0 0 400 400" class="w-full h-auto max-w-2xl mx-auto">
-              <!-- Radar Chart Background -->
-              <circle cx="200" cy="200" r="150" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-              <circle cx="200" cy="200" r="100" fill="none" stroke="#E5E7EB" stroke-width="1"/>
-              <circle cx="200" cy="200" r="50" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+        <div class="mb-10">
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Value Comparison</h2>
+          <div class="relative w-full max-w-3xl mx-auto"
+               data-controller="radar-chart"
+               data-radar-chart-dimensions-value="<%= @actor[:dimensions].map { |d| d[:name] }.to_json %>"
+               data-radar-chart-user-values-value="<%= @user_portrait[:dimensions].map { |d| d[:position] }.to_json %>"
+               data-radar-chart-actor-values-value="<%= @actor[:dimensions].map { |d| d[:actor_position] }.to_json %>"
+               data-radar-chart-actor-name-value="<%= @actor[:name] %>"
+               data-radar-chart-show-comparison-value="true">
 
-              <!-- Axes -->
-              <% 8.times do |i| %>
-                <% angle = (i * 45 - 90) * Math::PI / 180 %>
-                <% x = 200 + 150 * Math.cos(angle) %>
-                <% y = 200 + 150 * Math.sin(angle) %>
-                <line x1="200" y1="200" x2="<%= x %>" y2="<%= y %>" stroke="#E5E7EB" stroke-width="1"/>
-              <% end %>
+            <!-- SVG Container -->
+            <div class="bg-gradient-to-br from-gray-50 to-white rounded-xl p-8 sm:p-12 relative">
+              <svg data-radar-chart-target="svg" class="w-full h-auto" style="min-height: 400px;"></svg>
 
-              <!-- User Data (Blue) -->
-              <% user_points = @user_portrait[:dimensions].map.with_index do |dim, i|
-                angle = (i * 45 - 90) * Math::PI / 180
-                radius = ((dim[:position] + 100) / 200.0) * 150
-                x = 200 + radius * Math.cos(angle)
-                y = 200 + radius * Math.sin(angle)
-                "#{x},#{y}"
-              end.join(" ") %>
-              <polygon points="<%= user_points %>" fill="rgba(59, 130, 246, 0.2)" stroke="#3B82F6" stroke-width="2"/>
+              <!-- Tooltip -->
+              <div data-radar-chart-target="tooltip" class="hidden absolute z-10"></div>
+            </div>
 
-              <!-- Actor Data (Red) -->
-              <% actor_points = @actor[:dimensions].map.with_index do |dim, i|
-                angle = (i * 45 - 90) * Math::PI / 180
-                radius = ((dim[:actor_position] + 100) / 200.0) * 150
-                x = 200 + radius * Math.cos(angle)
-                y = 200 + radius * Math.sin(angle)
-                "#{x},#{y}"
-              end.join(" ") %>
-              <polygon points="<%= actor_points %>" fill="rgba(239, 68, 68, 0.2)" stroke="#EF4444" stroke-width="2"/>
-            </svg>
-            <div class="flex justify-center gap-6 mt-4 text-sm">
+            <!-- Legend -->
+            <div class="flex flex-wrap justify-center gap-6 mt-6 text-sm">
               <div class="flex items-center gap-2">
-                <div class="w-4 h-4 bg-blue-500 rounded"></div>
-                <span class="text-gray-700">Your Values</span>
+                <div class="w-4 h-4 bg-blue-500 rounded-full shadow-sm"></div>
+                <span class="text-gray-700 font-semibold">Your Values</span>
               </div>
               <div class="flex items-center gap-2">
-                <div class="w-4 h-4 bg-red-500 rounded"></div>
-                <span class="text-gray-700"><%= @actor[:name] %></span>
+                <div class="w-4 h-4 bg-red-500 rounded-full shadow-sm"></div>
+                <span class="text-gray-700 font-semibold"><%= @actor[:name] %></span>
               </div>
             </div>
+
+            <p class="text-center text-sm text-gray-500 mt-4">
+              Hover over the data points to see detailed values for each dimension
+            </p>
           </div>
         </div>
 
         <!-- Dimension Breakdown -->
         <div>
-          <h2 class="text-xl font-semibold text-gray-900 mb-6">Alignment by Dimension</h2>
+          <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Alignment by Dimension</h2>
           <div class="space-y-4">
             <% @actor[:dimensions].each do |dimension| %>
-              <div class="border border-gray-200 rounded-lg p-4">
-                <div class="flex items-center justify-between mb-3">
-                  <h3 class="font-semibold text-gray-900"><%= dimension[:name] %></h3>
-                  <span class="text-lg font-bold
-                    <% if dimension[:alignment] >= 80 %>text-green-600
-                    <% elsif dimension[:alignment] >= 50 %>text-blue-600
-                    <% elsif dimension[:alignment] >= 30 %>text-amber-600
-                    <% else %>text-red-600<% end %>">
+              <div class="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 hover:border-blue-300 rounded-xl p-5 sm:p-6 transition-all duration-200 hover:shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="font-bold text-gray-900 text-lg"><%= dimension[:name] %></h3>
+                  <span class="px-4 py-2 rounded-full text-lg font-bold shadow-sm
+                    <% if dimension[:alignment] >= 80 %>bg-green-100 text-green-700
+                    <% elsif dimension[:alignment] >= 50 %>bg-blue-100 text-blue-700
+                    <% elsif dimension[:alignment] >= 30 %>bg-amber-100 text-amber-700
+                    <% else %>bg-red-100 text-red-700<% end %>">
                     <%= dimension[:alignment] %>%
                   </span>
                 </div>
-                <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                  <div class="h-2 rounded-full
-                    <% if dimension[:alignment] >= 80 %>bg-green-500
-                    <% elsif dimension[:alignment] >= 50 %>bg-blue-500
-                    <% elsif dimension[:alignment] >= 30 %>bg-amber-500
-                    <% else %>bg-red-500<% end %>"
+                <div class="w-full bg-gray-100 rounded-full h-3 mb-4 overflow-hidden shadow-inner">
+                  <div class="h-3 rounded-full transition-all duration-500
+                    <% if dimension[:alignment] >= 80 %>bg-gradient-to-r from-green-400 to-green-600
+                    <% elsif dimension[:alignment] >= 50 %>bg-gradient-to-r from-blue-400 to-blue-600
+                    <% elsif dimension[:alignment] >= 30 %>bg-gradient-to-r from-amber-400 to-amber-600
+                    <% else %>bg-gradient-to-r from-red-400 to-red-600<% end %>"
                     style="width: <%= dimension[:alignment] %>%"></div>
                 </div>
-                <div class="flex justify-between text-sm text-gray-600">
-                  <span>You: <%= dimension[:user_position] %></span>
-                  <span><%= @actor[:name] %>: <%= dimension[:actor_position] %></span>
+                <div class="flex flex-col sm:flex-row justify-between gap-3 text-sm">
+                  <div class="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg border border-blue-100">
+                    <span class="font-semibold text-blue-900">You:</span>
+                    <span class="font-bold text-blue-700"><%= dimension[:user_position] %></span>
+                  </div>
+                  <div class="flex items-center gap-2 bg-red-50 px-3 py-2 rounded-lg border border-red-100">
+                    <span class="font-semibold text-red-900"><%= @actor[:name] %>:</span>
+                    <span class="font-bold text-red-700"><%= dimension[:actor_position] %></span>
+                  </div>
                 </div>
               </div>
             <% end %>
           </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: Dimensions -->
+      <div data-tabs-target="panel" data-panel-name="dimensions" class="p-6 sm:p-8 lg:p-10 hidden">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">Detailed Dimension Analysis</h2>
+        <div class="space-y-6">
+          <% @actor[:dimensions].each do |dimension| %>
+            <div class="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 hover:border-blue-300 rounded-2xl p-6 sm:p-8 transition-all duration-300 hover:shadow-xl">
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+                <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <span class="text-2xl">📊</span>
+                  <%= dimension[:name] %>
+                </h3>
+                <span class="px-5 py-2 rounded-full text-2xl font-bold shadow-lg
+                  <% if dimension[:alignment] >= 80 %>bg-gradient-to-r from-green-400 to-green-600 text-white
+                  <% elsif dimension[:alignment] >= 50 %>bg-gradient-to-r from-blue-400 to-blue-600 text-white
+                  <% elsif dimension[:alignment] >= 30 %>bg-gradient-to-r from-amber-400 to-amber-600 text-white
+                  <% else %>bg-gradient-to-r from-red-400 to-red-600 text-white<% end %>">
+                  <%= dimension[:alignment] %>%
+                </span>
+              </div>
+
+              <!-- Visual Scale -->
+              <div class="mb-6">
+                <div class="text-xs font-bold text-gray-500 mb-2 text-center">Position Comparison</div>
+                <div class="relative h-16 bg-gradient-to-r from-blue-200 via-gray-100 to-red-200 rounded-xl shadow-inner border-2 border-gray-200">
+                  <!-- User Position Marker -->
+                  <div class="absolute top-0 h-full flex items-center transition-all duration-300" style="left: <%= ((dimension[:user_position] + 100) / 2.0) %>%">
+                    <div class="relative">
+                      <div class="w-1 h-16 bg-gradient-to-b from-blue-500 to-blue-700 rounded-full shadow-lg"></div>
+                      <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                        <div class="bg-blue-600 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg">
+                          You
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Actor Position Marker -->
+                  <div class="absolute top-0 h-full flex items-center transition-all duration-300" style="left: <%= ((dimension[:actor_position] + 100) / 2.0) %>%">
+                    <div class="relative">
+                      <div class="w-1 h-16 bg-gradient-to-b from-red-500 to-red-700 rounded-full shadow-lg"></div>
+                      <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                        <div class="bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-bold shadow-lg">
+                          <%= @actor[:name] %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Alignment Bar -->
+              <div class="mb-6 mt-10">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-gray-600">Alignment Score</span>
+                  <span class="text-xs font-bold
+                    <% if dimension[:alignment] >= 80 %>text-green-600
+                    <% elsif dimension[:alignment] >= 50 %>text-blue-600
+                    <% elsif dimension[:alignment] >= 30 %>text-amber-600
+                    <% else %>text-red-600<% end %>">
+                    <% if dimension[:alignment] >= 80 %>Highly Aligned
+                    <% elsif dimension[:alignment] >= 50 %>Moderately Aligned
+                    <% elsif dimension[:alignment] >= 30 %>Somewhat Aligned
+                    <% else %>Not Aligned<% end %>
+                  </span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-4 overflow-hidden shadow-inner border border-gray-200">
+                  <div class="h-4 rounded-full transition-all duration-500
+                    <% if dimension[:alignment] >= 80 %>bg-gradient-to-r from-green-400 to-green-600
+                    <% elsif dimension[:alignment] >= 50 %>bg-gradient-to-r from-blue-400 to-blue-600
+                    <% elsif dimension[:alignment] >= 30 %>bg-gradient-to-r from-amber-400 to-amber-600
+                    <% else %>bg-gradient-to-r from-red-400 to-red-600<% end %>"
+                    style="width: <%= dimension[:alignment] %>%"></div>
+                </div>
+              </div>
+
+              <!-- Position Details -->
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 border-2 border-blue-200 shadow-md">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xl">👤</span>
+                    <div class="font-bold text-blue-900">Your Position</div>
+                  </div>
+                  <div class="text-3xl font-bold text-blue-700"><%= dimension[:user_position] %></div>
+                </div>
+                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-5 border-2 border-red-200 shadow-md">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xl">🎯</span>
+                    <div class="font-bold text-red-900"><%= @actor[:name] %>'s Position</div>
+                  </div>
+                  <div class="text-3xl font-bold text-red-700"><%= dimension[:actor_position] %></div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Tab Content: Timeline -->
+      <div data-tabs-target="panel" data-panel-name="timeline" class="p-8 hidden">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">Position Timeline</h2>
+        <div class="text-center py-12">
+          <div class="text-6xl mb-4">📊</div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Timeline Coming Soon</h3>
+          <p class="text-gray-600 max-w-md mx-auto">
+            Track how <%= @actor[:name] %>'s positions have evolved over time. This feature will show historical changes in their value positions based on their public statements and actions.
+          </p>
         </div>
       </div>
     </div>
