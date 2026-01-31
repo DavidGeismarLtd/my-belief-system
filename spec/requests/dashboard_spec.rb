@@ -1,14 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe DashboardController, type: :controller do
-  let(:user) { create(:user) }
+RSpec.describe 'Dashboard', type: :request do
+  let(:user) { create(:user, :onboarding_completed) }
 
   before do
-    @request.env["devise.mapping"] = Devise.mappings[:user]
-    sign_in user
+    login_as(user, scope: :user)
   end
 
-  describe 'GET #index' do
+  describe 'GET /dashboard' do
     let!(:party) { create(:actor, :party, name: 'Democratic Party', active: true) }
     let!(:personality) { create(:actor, :personality, name: 'Joe Biden', active: true) }
     let!(:inactive_actor) { create(:actor, active: false) }
@@ -16,7 +15,7 @@ RSpec.describe DashboardController, type: :controller do
     let!(:dimension2) { create(:value_dimension, name: 'Economic Equality') }
 
     before do
-      get :index
+      get dashboard_path
     end
 
     it 'returns http success' do
@@ -103,28 +102,28 @@ RSpec.describe DashboardController, type: :controller do
     describe 'alignment label logic' do
       it 'returns Strong for scores 80-100' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(85)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_label]).to eq('Strong')
       end
 
       it 'returns Moderate for scores 60-79' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(65)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_label]).to eq('Moderate')
       end
 
       it 'returns Weak for scores 40-59' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(45)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_label]).to eq('Weak')
       end
 
       it 'returns Misalignment for scores below 40' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(25)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_label]).to eq('Misalignment')
       end
@@ -133,28 +132,28 @@ RSpec.describe DashboardController, type: :controller do
     describe 'alignment color logic' do
       it 'returns green for scores 80-100' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(85)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_color]).to eq('green')
       end
 
       it 'returns blue for scores 60-79' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(65)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_color]).to eq('blue')
       end
 
       it 'returns amber for scores 40-59' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(45)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_color]).to eq('amber')
       end
 
       it 'returns red for scores below 40' do
         allow_any_instance_of(DashboardController).to receive(:calculate_mock_alignment_score).and_return(25)
-        get :index
+        get dashboard_path
         actor = assigns(:actors).first
         expect(actor[:alignment_color]).to eq('red')
       end

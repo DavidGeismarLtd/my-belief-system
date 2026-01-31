@@ -1,20 +1,22 @@
 require 'rails_helper'
 
-RSpec.describe OnboardingController, type: :controller do
-  render_views
-
+RSpec.describe 'Onboarding', type: :request do
   let(:user) { create(:user) }
 
   before do
-    sign_in user
+    login_as(user, scope: :user)
   end
 
-  describe 'GET #start' do
+  describe 'GET /onboarding' do
     it 'resets session answers and user_profile' do
-      session[:answers] = { '1' => 'old_answer' }
-      session[:user_profile] = { country: 'Old Country' }
+      # First, populate the session with some data
+      post onboarding_save_profile_path, params: { country: 'Old Country' }
 
-      get :start
+      # Verify session has profile data
+      expect(session[:user_profile][:country]).to eq('Old Country')
+
+      # Now visit start page which should reset the session
+      get onboarding_path
 
       expect(session[:answers]).to eq({})
       expect(session[:user_profile]).to eq({})
@@ -22,12 +24,12 @@ RSpec.describe OnboardingController, type: :controller do
     end
 
     it 'renders the start template' do
-      get :start
+      get onboarding_path
       expect(response).to render_template(:start)
     end
   end
 
-  describe 'POST #save_profile' do
+  describe 'POST /onboarding/profile' do
     let(:profile_params) do
       {
         country: 'United States',
@@ -38,7 +40,7 @@ RSpec.describe OnboardingController, type: :controller do
     end
 
     it 'saves profile data to session' do
-      post :save_profile, params: profile_params
+      post onboarding_save_profile_path, params: profile_params
 
       expect(session[:user_profile][:country]).to eq('United States')
       expect(session[:user_profile][:age]).to eq('30')
@@ -47,19 +49,26 @@ RSpec.describe OnboardingController, type: :controller do
     end
 
     it 'redirects to first question' do
-      post :save_profile, params: profile_params
+      post onboarding_save_profile_path, params: profile_params
       expect(response).to redirect_to(onboarding_question_path(1))
     end
   end
 
-  describe 'GET #question' do
+  describe 'GET /onboarding/question/:number' do
     let(:dimension) { create(:value_dimension) }
     let!(:universal_question) { create(:question, value_dimension: dimension, position: 1, is_universal: true) }
     let!(:us_question) { create(:question, value_dimension: dimension, position: 2, country: 'United States', is_universal: false) }
 
     context 'without country in session' do
+      before do
+        # Ensure user doesn't have a country set
+        user.update(country: nil)
+        # Ensure session is cleared by visiting the start page
+        get onboarding_path
+      end
+
       it 'loads only universal questions' do
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(assigns(:questions)).to include(universal_question)
         expect(assigns(:questions)).not_to include(us_question)
@@ -68,23 +77,25 @@ RSpec.describe OnboardingController, type: :controller do
 
     context 'with country in session' do
       before do
-        session[:user_profile] = { country: 'United States' }
+        # Set session data before the request
+        get onboarding_path
+        post onboarding_save_profile_path, params: { country: 'United States' }
       end
 
       it 'loads universal and country-specific questions' do
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(assigns(:questions)).to include(universal_question, us_question)
       end
 
       it 'assigns the correct question based on number' do
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(assigns(:question)).to eq(universal_question)
       end
 
       it 'assigns total questions count' do
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(assigns(:total_questions)).to eq(2)
       end
@@ -92,31 +103,33 @@ RSpec.describe OnboardingController, type: :controller do
 
     context 'when question number exceeds total' do
       before do
-        session[:user_profile] = { country: 'United States' }
+        get onboarding_path
+        post onboarding_save_profile_path, params: { country: 'United States' }
       end
 
       it 'redirects to portrait page' do
-        get :question, params: { number: 999 }
+        get onboarding_question_path(999)
 
         expect(response).to redirect_to(onboarding_portrait_path)
       end
     end
 
     it 'renders the question template' do
-      get :question, params: { number: 1 }
+      get onboarding_question_path(1)
       expect(response).to render_template(:question)
     end
 
     describe 'question type rendering' do
       before do
-        session[:user_profile] = { country: 'United States' }
+        get onboarding_path
+        post onboarding_save_profile_path, params: { country: 'United States' }
         # Clear existing questions to ensure we're testing the right one
         Question.destroy_all
       end
 
       it 'renders direct_value questions with 1-5 scale buttons' do
         question = create(:question, question_type: 'direct_value', value_dimension: dimension, position: 1, is_universal: true)
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response).to have_http_status(:success)
         expect(assigns(:question)).to eq(question)
@@ -131,7 +144,7 @@ RSpec.describe OnboardingController, type: :controller do
       it 'renders policy_preference questions with left/right buttons' do
         question = create(:question, question_type: 'policy_preference', value_dimension: dimension, position: 1, is_universal: true,
                           options: { left_option: 'More regulation', right_option: 'Less regulation' })
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response.body).to include('Left Position')
         expect(response.body).to include('Right Position')
@@ -145,7 +158,7 @@ RSpec.describe OnboardingController, type: :controller do
       it 'renders tradeoff_slider questions with slider input' do
         question = create(:question, question_type: 'tradeoff_slider', value_dimension: dimension, position: 1, is_universal: true,
                           options: { left_option: 'Security', right_option: 'Privacy' })
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response.body).to include('type="range"')
         expect(response.body).to include('min="0"')
@@ -157,7 +170,7 @@ RSpec.describe OnboardingController, type: :controller do
       it 'renders dilemma questions with A/B choice buttons' do
         question = create(:question, question_type: 'dilemma', value_dimension: dimension, position: 1, is_universal: true,
                           options: { option_a: 'Choice A description', option_b: 'Choice B description' })
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response.body).to include('Option A')
         expect(response.body).to include('Option B')
@@ -171,15 +184,16 @@ RSpec.describe OnboardingController, type: :controller do
 
     describe 'answer persistence' do
       before do
-        session[:user_profile] = { country: 'United States' }
+        get onboarding_path
+        post onboarding_save_profile_path, params: { country: 'United States' }
         Question.destroy_all
       end
 
       it 'shows previously selected answer when navigating back to a direct_value question' do
         question = create(:question, question_type: 'direct_value', value_dimension: dimension, position: 1, is_universal: true)
-        session[:answers] = { question.id.to_s => '4' }
+        post onboarding_answer_path, params: { question_number: 1, answer_value: '4' }
 
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response.body).to include('border-blue-600 bg-blue-50')
         expect(response.body).to include('value="4"')
@@ -190,9 +204,9 @@ RSpec.describe OnboardingController, type: :controller do
       it 'shows previously selected answer when navigating back to a policy_preference question' do
         question = create(:question, question_type: 'policy_preference', value_dimension: dimension, position: 1, is_universal: true,
                           options: { left_option: 'More regulation', right_option: 'Less regulation' })
-        session[:answers] = { question.id.to_s => 'left' }
+        post onboarding_answer_path, params: { question_number: 1, answer_value: 'left' }
 
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response.body).to include('border-blue-600 bg-blue-50')
         expect(response.body).to include('value="left"')
@@ -201,9 +215,9 @@ RSpec.describe OnboardingController, type: :controller do
       it 'shows previously selected answer when navigating back to a tradeoff_slider question' do
         question = create(:question, question_type: 'tradeoff_slider', value_dimension: dimension, position: 1, is_universal: true,
                           options: { left_option: 'Security', right_option: 'Privacy' })
-        session[:answers] = { question.id.to_s => '75' }
+        post onboarding_answer_path, params: { question_number: 1, answer_value: '75' }
 
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response.body).to include('value="75"')
         expect(response.body).to include('>75</span>')
@@ -212,9 +226,9 @@ RSpec.describe OnboardingController, type: :controller do
       it 'shows previously selected answer when navigating back to a dilemma question' do
         question = create(:question, question_type: 'dilemma', value_dimension: dimension, position: 1, is_universal: true,
                           options: { option_a: 'Choice A', option_b: 'Choice B' })
-        session[:answers] = { question.id.to_s => 'B' }
+        post onboarding_answer_path, params: { question_number: 1, answer_value: 'B' }
 
-        get :question, params: { number: 1 }
+        get onboarding_question_path(1)
 
         expect(response.body).to include('border-blue-600 bg-blue-50')
         expect(response.body).to include('value="B"')
@@ -222,24 +236,25 @@ RSpec.describe OnboardingController, type: :controller do
     end
   end
 
-  describe 'POST #answer' do
+  describe 'POST /onboarding/answer' do
     let(:dimension) { create(:value_dimension) }
     let!(:question1) { create(:question, value_dimension: dimension, position: 1, is_universal: true) }
     let!(:question2) { create(:question, value_dimension: dimension, position: 2, is_universal: true) }
 
     before do
-      session[:user_profile] = { country: 'United States' }
+      get onboarding_path
+      post onboarding_save_profile_path, params: { country: 'United States' }
     end
 
     it 'stores answer in session' do
-      post :answer, params: { question_number: 1, answer_value: '75' }
+      post onboarding_answer_path, params: { question_number: 1, answer_value: '75' }
 
       expect(session[:answers][question1.id.to_s]).to eq('75')
     end
 
     context 'when not the last question' do
       it 'redirects to next question' do
-        post :answer, params: { question_number: 1, answer_value: '75' }
+        post onboarding_answer_path, params: { question_number: 1, answer_value: '75' }
 
         expect(response).to redirect_to(onboarding_question_path(2))
       end
@@ -247,51 +262,50 @@ RSpec.describe OnboardingController, type: :controller do
 
     context 'when last question' do
       it 'redirects to portrait page' do
-        post :answer, params: { question_number: 2, answer_value: '75' }
+        post onboarding_answer_path, params: { question_number: 2, answer_value: '75' }
 
         expect(response).to redirect_to(onboarding_portrait_path)
       end
     end
 
     it 'handles multiple answers in sequence' do
-      post :answer, params: { question_number: 1, answer_value: '50' }
-      post :answer, params: { question_number: 2, answer_value: '75' }
+      post onboarding_answer_path, params: { question_number: 1, answer_value: '50' }
+      post onboarding_answer_path, params: { question_number: 2, answer_value: '75' }
 
       expect(session[:answers][question1.id.to_s]).to eq('50')
       expect(session[:answers][question2.id.to_s]).to eq('75')
     end
   end
 
-  describe 'GET #portrait' do
+  describe 'GET /onboarding/portrait' do
     let(:dimension1) { create(:value_dimension, name: 'Liberty vs Authority') }
     let(:dimension2) { create(:value_dimension, name: 'Economic Equality') }
     let!(:question1) { create(:question, value_dimension: dimension1, position: 1, is_universal: true) }
     let!(:question2) { create(:question, value_dimension: dimension2, position: 2, is_universal: true) }
 
     before do
-      session[:user_profile] = { country: 'United States' }
-      session[:answers] = {
-        question1.id.to_s => '75',
-        question2.id.to_s => '25'
-      }
+      get onboarding_path
+      post onboarding_save_profile_path, params: { country: 'United States' }
+      post onboarding_answer_path, params: { question_number: 1, answer_value: '75' }
+      post onboarding_answer_path, params: { question_number: 2, answer_value: '25' }
     end
 
     it 'calculates portrait from session answers' do
-      get :portrait
+      get onboarding_portrait_path
 
       expect(assigns(:portrait)).to be_present
       expect(assigns(:portrait)[:dimensions]).to be_an(Array)
     end
 
     it 'includes all active dimensions in portrait' do
-      get :portrait
+      get onboarding_portrait_path
 
       dimension_names = assigns(:portrait)[:dimensions].map { |d| d[:name] }
       expect(dimension_names).to include(dimension1.name, dimension2.name)
     end
 
     it 'renders the portrait template' do
-      get :portrait
+      get onboarding_portrait_path
       expect(response).to render_template(:portrait)
     end
   end
