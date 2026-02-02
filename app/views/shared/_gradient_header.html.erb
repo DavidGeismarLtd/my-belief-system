@@ -1,0 +1,54 @@
+<%
+  # Gradient Header Partial
+  # Displays a page header with gradient text and optional subtitle
+  #
+  # Required parameters:
+  #   title (string) - Main heading text
+  #
+  # Optional parameters:
+  #   subtitle (string) - Subtitle text (default: nil)
+  #   gradient_from (string) - Tailwind gradient start color (default: "blue-600")
+  #   gradient_to (string) - Tailwind gradient end color (default: "purple-600")
+  #   badge_text (string) - Optional badge text to show above title (default: nil)
+  #   badge_color (string) - Badge background color (default: "blue")
+  #   text_size (string) - Text size class (default: "3xl sm:text-4xl lg:text-5xl")
+  #   center (boolean) - Center align the header (default: false)
+%>
+
+<%
+  subtitle ||= nil
+  gradient_from ||= "blue-600"
+  gradient_to ||= "purple-600"
+  badge_text ||= nil
+  badge_color ||= "blue"
+  text_size ||= "3xl sm:text-4xl lg:text-5xl"
+  center = false if !defined?(center)
+  
+  alignment_class = center ? "text-center" : ""
+  subtitle_alignment = center ? "mx-auto" : ""
+%>
+
+<div class="mb-8 sm:mb-12 <%= alignment_class %>">
+  <% if badge_text.present? %>
+    <div class="<%= center ? 'flex justify-center' : '' %> mb-4">
+      <div class="inline-block px-4 py-2 bg-<%= badge_color %>-100 text-<%= badge_color %>-700 rounded-full text-sm font-semibold">
+        <%= badge_text %>
+      </div>
+    </div>
+  <% end %>
+  
+  <h1 class="text-<%= text_size %> font-bold text-gray-900 mb-3">
+    <% if title.include?('<span') %>
+      <%= title.html_safe %>
+    <% else %>
+      <span class="bg-gradient-to-r from-<%= gradient_from %> to-<%= gradient_to %> bg-clip-text text-transparent"><%= title %></span>
+    <% end %>
+  </h1>
+  
+  <% if subtitle.present? %>
+    <p class="text-base sm:text-lg text-gray-600 max-w-2xl <%= subtitle_alignment %>">
+      <%= subtitle %>
+    </p>
+  <% end %>
+</div>
+

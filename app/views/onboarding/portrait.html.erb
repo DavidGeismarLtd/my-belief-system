@@ -1,17 +1,12 @@
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
-    <div class="text-center mb-12">
-      <div class="inline-block mb-4 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-        ✓ Assessment Complete
-      </div>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-        Your <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Value Portrait</span>
-      </h1>
-      <p class="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
-        Based on your answers, here's what you value politically
-      </p>
-    </div>
+    <%= render 'shared/gradient_header',
+               title: 'Your <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Value Portrait</span>',
+               subtitle: "Based on your answers, here's what you value politically",
+               badge_text: "✓ Assessment Complete",
+               badge_color: "green",
+               center: true %>
 
     <!-- Interactive Radar Chart -->
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10 mb-8">
@@ -49,73 +44,14 @@
       <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">Your Values Breakdown</h2>
 
       <% @portrait[:dimensions].each do |dimension| %>
-        <div class="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl border border-gray-100 hover:border-blue-200 p-6 sm:p-8 transition-all duration-300">
-          <h3 class="text-xl font-bold text-gray-900 mb-5 flex items-center gap-3">
-            <span class="text-2xl">📊</span>
-            <%= dimension[:name] %>
-          </h3>
-
-          <!-- Position Indicator -->
-          <div class="mb-6">
-            <div class="flex justify-between text-sm font-semibold text-gray-700 mb-3">
-              <span class="text-left flex-1"><%= dimension[:left_pole] %></span>
-              <span class="text-center px-4 text-gray-400">←</span>
-              <span class="text-right flex-1"><%= dimension[:right_pole] %></span>
-            </div>
-            <div class="relative h-4 bg-gradient-to-r from-blue-100 via-gray-100 to-red-100 rounded-full shadow-inner">
-              <% position_percent = ((dimension[:position] + 100) / 2.0).round %>
-              <div class="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full shadow-lg ring-4 ring-white transition-transform duration-200 group-hover:scale-110"
-                   style="left: calc(<%= position_percent %>% - 12px)"></div>
-            </div>
-            <div class="text-center mt-2">
-              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">
-                Position: <%= dimension[:position] %>
-              </span>
-            </div>
-          </div>
-
-          <!-- Stats -->
-          <div class="grid sm:grid-cols-2 gap-4 mb-5">
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 border border-purple-200">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-lg">💪</span>
-                <span class="text-sm font-bold text-purple-900">Strength</span>
-              </div>
-              <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-bold text-purple-700">
-                  <% if dimension[:intensity] > 75 %>Strong<% elsif dimension[:intensity] > 50 %>Moderate<% else %>Weak<% end %>
-                </span>
-                <span class="text-sm text-purple-600">(<%= (dimension[:intensity] / 100.0).round(2) %>)</span>
-              </div>
-            </div>
-            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 border border-green-200">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="text-lg">✓</span>
-                <span class="text-sm font-bold text-green-900">Confidence</span>
-              </div>
-              <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-bold text-green-700">
-                  <% if dimension[:confidence] > 80 %>High<% elsif dimension[:confidence] > 60 %>Medium<% else %>Low<% end %>
-                </span>
-                <span class="text-sm text-green-600">(<%= (dimension[:confidence] / 100.0).round(2) %>)</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lean Direction -->
-          <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border border-blue-100">
-            <p class="text-gray-900 flex items-center gap-2">
-              <span class="font-bold">You lean toward:</span>
-              <% if dimension[:position] < -20 %>
-                <span class="px-3 py-1 bg-blue-600 text-white rounded-full text-sm font-bold"><%= dimension[:left_pole] %></span>
-              <% elsif dimension[:position] > 20 %>
-                <span class="px-3 py-1 bg-red-600 text-white rounded-full text-sm font-bold"><%= dimension[:right_pole] %></span>
-              <% else %>
-                <span class="px-3 py-1 bg-gray-600 text-white rounded-full text-sm font-bold">Center/Balanced</span>
-              <% end %>
-            </p>
-          </div>
-        </div>
+        <%= render 'shared/dimension_card',
+                   dimension_name: dimension[:name],
+                   position: dimension[:position],
+                   intensity: dimension[:intensity],
+                   confidence: dimension[:confidence],
+                   left_pole: dimension[:left_pole],
+                   right_pole: dimension[:right_pole],
+                   explanation: nil %>
       <% end %>
     </div>
 

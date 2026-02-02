@@ -1,0 +1,59 @@
+<%
+  # Stat Grid Partial
+  # Displays a grid of statistics with colored backgrounds
+  #
+  # Required parameters:
+  #   stats (hash) - A hash containing stat data with structure:
+  #     {
+  #       lean: { label: "Lean", value: "Individual", color: "purple", icon: nil },
+  #       intensity: { label: "Intensity", value: "Strong (0.75)", color: "blue", icon: "💪" },
+  #       confidence: { label: "Confidence", value: "High (0.8)", color: "green", icon: "✓" }
+  #     }
+  #
+  # Optional parameters:
+  #   columns (integer) - Number of columns in grid (default: based on stats count)
+  #   compact (boolean) - Use compact layout (default: false)
+%>
+
+<%
+  columns ||= stats.keys.length
+  compact = false if !defined?(compact)
+  
+  grid_cols_class = case columns
+  when 2
+    "sm:grid-cols-2"
+  when 3
+    "sm:grid-cols-3"
+  else
+    "sm:grid-cols-#{columns}"
+  end
+%>
+
+<div class="grid <%= grid_cols_class %> gap-4">
+  <% stats.each do |key, stat| %>
+    <% 
+      color = stat[:color] || "gray"
+      label = stat[:label] || key.to_s.titleize
+      value = stat[:value]
+      icon = stat[:icon]
+    %>
+    
+    <div class="bg-gradient-to-br from-<%= color %>-50 to-<%= color %>-100 rounded-xl p-4 border border-<%= color %>-200 <%= compact ? '' : 'text-center' %>">
+      <% if icon.present? && !compact %>
+        <div class="flex items-center gap-2 mb-2 <%= compact ? '' : 'justify-center' %>">
+          <span class="text-lg"><%= icon %></span>
+          <div class="text-xs font-bold text-<%= color %>-900"><%= label %></div>
+        </div>
+        <div class="text-lg font-bold text-<%= color %>-700">
+          <%= value %>
+        </div>
+      <% else %>
+        <div class="text-xs font-bold text-<%= color %>-900 mb-2"><%= label %></div>
+        <div class="text-lg font-bold text-<%= color %>-700">
+          <%= value %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
