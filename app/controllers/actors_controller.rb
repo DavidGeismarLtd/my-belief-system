@@ -120,13 +120,22 @@ class ActorsController < ApplicationController
   end
 
   def get_actor_positions(actor)
-    # For now, use metadata to store actor positions
-    # In the future, this will come from ActorValuePortrait model
-    positions = actor.metadata['value_positions'] || {}
+    # Get positions from ActorValuePortrait model
+    actor_portraits = actor.actor_value_portraits.includes(:value_dimension)
 
-    # Convert string keys to integer keys if needed
-    positions.transform_keys do |key|
-      key.is_a?(String) ? key.to_i : key
+    # Build hash of dimension_id => position
+    positions = {}
+    actor_portraits.each do |portrait|
+      positions[portrait.value_dimension_id] = portrait.position
     end
+
+    # Fallback to metadata if no portraits exist (for backward compatibility during migration)
+    if positions.empty? && actor.metadata['value_positions'].present?
+      positions = actor.metadata['value_positions'].transform_keys do |key|
+        key.is_a?(String) ? key.to_i : key
+      end
+    end
+
+    positions
   end
 end

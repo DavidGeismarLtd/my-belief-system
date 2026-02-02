@@ -4,6 +4,8 @@ class Actor < ApplicationRecord
 
   # Associations
   has_many :interventions, dependent: :destroy
+  has_many :actor_value_portraits, dependent: :destroy
+  has_many :value_dimensions, through: :actor_value_portraits
 
   # Validations
   validates :name, presence: true

@@ -5,6 +5,8 @@ RSpec.describe ValueDimension, type: :model do
     it { should have_many(:questions).dependent(:destroy) }
     it { should have_many(:user_value_portraits).dependent(:destroy) }
     it { should have_many(:users).through(:user_value_portraits) }
+    it { should have_many(:actor_value_portraits).dependent(:destroy) }
+    it { should have_many(:actors).through(:actor_value_portraits) }
   end
 
   describe 'validations' do

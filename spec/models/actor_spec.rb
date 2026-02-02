@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Actor, type: :model do
   describe 'associations' do
     it { should have_many(:interventions).dependent(:destroy) }
+    it { should have_many(:actor_value_portraits).dependent(:destroy) }
+    it { should have_many(:value_dimensions).through(:actor_value_portraits) }
   end
 
   describe 'validations' do
@@ -135,4 +137,3 @@ RSpec.describe Actor, type: :model do
     end
   end
 end
-

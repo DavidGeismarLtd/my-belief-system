@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_18_000004) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_02_110742) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "actor_value_portraits", force: :cascade do |t|
+    t.bigint "actor_id", null: false
+    t.decimal "confidence", precision: 5, scale: 2
+    t.datetime "created_at", null: false
+    t.decimal "intensity", precision: 5, scale: 2
+    t.decimal "position", precision: 5, scale: 2, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "value_dimension_id", null: false
+    t.index ["actor_id", "value_dimension_id"], name: "index_actor_portraits_on_actor_and_dimension", unique: true
+    t.index ["actor_id"], name: "index_actor_value_portraits_on_actor_id"
+    t.index ["position"], name: "index_actor_value_portraits_on_position"
+    t.index ["value_dimension_id"], name: "index_actor_value_portraits_on_value_dimension_id"
+  end
 
   create_table "actors", force: :cascade do |t|
     t.boolean "active", default: true, null: false
@@ -145,6 +159,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_18_000004) do
     t.index ["position"], name: "index_value_dimensions_on_position"
   end
 
+  add_foreign_key "actor_value_portraits", "actors"
+  add_foreign_key "actor_value_portraits", "value_dimensions"
   add_foreign_key "interventions", "actors"
   add_foreign_key "questions", "value_dimensions"
   add_foreign_key "user_answers", "questions"
