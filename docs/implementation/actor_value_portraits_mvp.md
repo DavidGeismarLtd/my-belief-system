@@ -46,22 +46,20 @@ Created `actor_value_portraits` table with:
 Updated `get_actor_positions` method to:
 1. Query `ActorValuePortrait` records instead of metadata
 2. Build hash of `dimension_id => position`
-3. Fallback to metadata for backward compatibility during migration
 
-### 4. Data Migration
+### 4. Seed Data
 
-**Rake Task**: `lib/tasks/migrate_actor_value_positions.rake`
+**Seed File**: `db/seeds/actors.rb`
 
-Created task `data:migrate_actor_value_positions` that:
-- Reads `value_positions` from actor metadata
-- Creates `ActorValuePortrait` records for each dimension
+Updated to create `ActorValuePortrait` records directly when seeding actors:
+- Creates actor record without `value_positions` in metadata
+- Immediately creates 8 `ActorValuePortrait` records for each actor
 - Sets default intensity (70.0) and confidence (80.0) for MVP
-- Provides detailed migration report
+- Eliminates need for separate data migration task
 
-**Migration Results**:
-- ✓ Migrated: 56 portraits (7 actors × 8 dimensions)
-- ⚠️  Skipped: 0 actors
-- ✗ Errors: 0
+**Seed Results**:
+- ✓ Created: 56 portraits (7 actors × 8 dimensions)
+- All actors have complete value portraits on creation
 
 ### 5. Testing
 
@@ -176,4 +174,3 @@ Future enhancements (not part of this MVP):
 3. Implement change detection
 4. Add NLP-based position extraction
 5. Create admin interface for manual position updates
-
