@@ -129,13 +129,6 @@ class ActorsController < ApplicationController
       positions[portrait.value_dimension_id] = portrait.position
     end
 
-    # Fallback to metadata if no portraits exist (for backward compatibility during migration)
-    if positions.empty? && actor.metadata['value_positions'].present?
-      positions = actor.metadata['value_positions'].transform_keys do |key|
-        key.is_a?(String) ? key.to_i : key
-      end
-    end
-
     positions
   end
 end
