@@ -8,14 +8,14 @@ Actor.destroy_all
 # ============================================================================
 
 # Get dimension IDs for value positions
-liberty_authority = ValueDimension.find_by(key: 'liberty_authority')
-economic_equality = ValueDimension.find_by(key: 'economic_equality')
-tradition_progress = ValueDimension.find_by(key: 'tradition_progress')
-nationalism_globalism = ValueDimension.find_by(key: 'nationalism_globalism')
-security_privacy = ValueDimension.find_by(key: 'security_privacy')
-meritocracy_equity = ValueDimension.find_by(key: 'meritocracy_equity')
-environment_growth = ValueDimension.find_by(key: 'environment_growth')
-direct_representative = ValueDimension.find_by(key: 'direct_representative')
+liberty_authority = ValueDimension.find_by(key: "liberty_authority")
+economic_equality = ValueDimension.find_by(key: "economic_equality")
+tradition_progress = ValueDimension.find_by(key: "tradition_progress")
+nationalism_globalism = ValueDimension.find_by(key: "nationalism_globalism")
+security_privacy = ValueDimension.find_by(key: "security_privacy")
+meritocracy_equity = ValueDimension.find_by(key: "meritocracy_equity")
+environment_growth = ValueDimension.find_by(key: "environment_growth")
+direct_representative = ValueDimension.find_by(key: "direct_representative")
 
 democratic_party = Actor.create!(
   name: "Democratic Party",
@@ -27,7 +27,7 @@ democratic_party = Actor.create!(
   active: true,
   metadata: {
     founded: 1828,
-    ideology: ["Social liberalism", "Progressivism"],
+    ideology: [ "Social liberalism", "Progressivism" ],
     headquarters: "Washington, D.C."
   }
 )
@@ -42,7 +42,7 @@ ActorValuePortrait.create!([
   { actor: democratic_party, value_dimension: meritocracy_equity, position: 45, intensity: 70.0, confidence: 80.0 },
   { actor: democratic_party, value_dimension: environment_growth, position: -70, intensity: 70.0, confidence: 80.0 },
   { actor: democratic_party, value_dimension: direct_representative, position: -10, intensity: 70.0, confidence: 80.0 }
-])
+ ])
 
 republican_party = Actor.create!(
   name: "Republican Party",
@@ -54,7 +54,7 @@ republican_party = Actor.create!(
   active: true,
   metadata: {
     founded: 1854,
-    ideology: ["Conservatism", "Economic liberalism"],
+    ideology: [ "Conservatism", "Economic liberalism" ],
     headquarters: "Washington, D.C."
   }
 )
@@ -69,7 +69,7 @@ ActorValuePortrait.create!([
   { actor: republican_party, value_dimension: meritocracy_equity, position: -50, intensity: 70.0, confidence: 80.0 },
   { actor: republican_party, value_dimension: environment_growth, position: 60, intensity: 70.0, confidence: 80.0 },
   { actor: republican_party, value_dimension: direct_representative, position: 30, intensity: 70.0, confidence: 80.0 }
-])
+ ])
 
 # ============================================================================
 # UNITED STATES - PERSONALITIES
@@ -101,7 +101,7 @@ ActorValuePortrait.create!([
   { actor: joe_biden, value_dimension: meritocracy_equity, position: 35, intensity: 70.0, confidence: 80.0 },
   { actor: joe_biden, value_dimension: environment_growth, position: -55, intensity: 70.0, confidence: 80.0 },
   { actor: joe_biden, value_dimension: direct_representative, position: -30, intensity: 70.0, confidence: 80.0 }
-])
+ ])
 
 donald_trump = Actor.create!(
   name: "Donald Trump",
@@ -130,7 +130,7 @@ ActorValuePortrait.create!([
   { actor: donald_trump, value_dimension: meritocracy_equity, position: -60, intensity: 70.0, confidence: 80.0 },
   { actor: donald_trump, value_dimension: environment_growth, position: 75, intensity: 70.0, confidence: 80.0 },
   { actor: donald_trump, value_dimension: direct_representative, position: 40, intensity: 70.0, confidence: 80.0 }
-])
+ ])
 
 kamala_harris = Actor.create!(
   name: "Kamala Harris",
@@ -158,7 +158,7 @@ ActorValuePortrait.create!([
   { actor: kamala_harris, value_dimension: meritocracy_equity, position: 40, intensity: 70.0, confidence: 80.0 },
   { actor: kamala_harris, value_dimension: environment_growth, position: -60, intensity: 70.0, confidence: 80.0 },
   { actor: kamala_harris, value_dimension: direct_representative, position: -20, intensity: 70.0, confidence: 80.0 }
-])
+ ])
 
 bernie_sanders = Actor.create!(
   name: "Bernie Sanders",
@@ -186,7 +186,7 @@ ActorValuePortrait.create!([
   { actor: bernie_sanders, value_dimension: meritocracy_equity, position: 60, intensity: 70.0, confidence: 80.0 },
   { actor: bernie_sanders, value_dimension: environment_growth, position: -75, intensity: 70.0, confidence: 80.0 },
   { actor: bernie_sanders, value_dimension: direct_representative, position: -40, intensity: 70.0, confidence: 80.0 }
-])
+ ])
 
 ron_desantis = Actor.create!(
   name: "Ron DeSantis",
@@ -215,6 +215,6 @@ ActorValuePortrait.create!([
   { actor: ron_desantis, value_dimension: meritocracy_equity, position: -55, intensity: 70.0, confidence: 80.0 },
   { actor: ron_desantis, value_dimension: environment_growth, position: 70, intensity: 70.0, confidence: 80.0 },
   { actor: ron_desantis, value_dimension: direct_representative, position: 35, intensity: 70.0, confidence: 80.0 }
-])
+ ])
 
 puts "    ✓ Created #{Actor.count} actors"
