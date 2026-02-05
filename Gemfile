@@ -79,3 +79,5 @@ group :test do
   gem "rails-controller-testing"
   gem "capybara"
 end
+
+gem "lefthook", "~> 2.1", group: :development
