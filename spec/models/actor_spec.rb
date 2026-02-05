@@ -122,9 +122,9 @@ RSpec.describe Actor, type: :model do
 
   describe 'metadata' do
     it 'stores and retrieves metadata as JSON' do
-      actor = create(:actor, metadata: { founded: 1828, ideology: ['Progressivism'] })
+      actor = create(:actor, metadata: { founded: 1828, ideology: [ 'Progressivism' ] })
       expect(actor.metadata['founded']).to eq(1828)
-      expect(actor.metadata['ideology']).to eq(['Progressivism'])
+      expect(actor.metadata['ideology']).to eq([ 'Progressivism' ])
     end
   end
 

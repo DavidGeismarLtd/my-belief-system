@@ -93,7 +93,7 @@ RSpec.describe User, type: :model do
   end
 
   describe '#skipped_question_count' do
-    let(:user) { create(:user, skipped_questions: [1, 2, 3]) }
+    let(:user) { create(:user, skipped_questions: [ 1, 2, 3 ]) }
 
     it 'returns the number of skipped questions' do
       expect(user.skipped_question_count).to eq(3)
@@ -109,12 +109,12 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user) }
 
     it 'returns true when user has skipped fewer than 3 questions' do
-      user.skipped_questions = [1, 2]
+      user.skipped_questions = [ 1, 2 ]
       expect(user.can_skip_question?).to be true
     end
 
     it 'returns false when user has skipped 3 or more questions' do
-      user.skipped_questions = [1, 2, 3]
+      user.skipped_questions = [ 1, 2, 3 ]
       expect(user.can_skip_question?).to be false
     end
   end
@@ -135,7 +135,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'when user cannot skip more questions' do
-      before { user.update(skipped_questions: [1, 2, 3]) }
+      before { user.update(skipped_questions: [ 1, 2, 3 ]) }
 
       it 'returns false and does not add question' do
         expect(user.skip_question!(4)).to be false

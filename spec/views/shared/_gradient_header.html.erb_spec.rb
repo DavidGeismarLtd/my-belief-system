@@ -151,4 +151,3 @@ RSpec.describe 'shared/_gradient_header.html.erb', type: :view do
     end
   end
 end
-

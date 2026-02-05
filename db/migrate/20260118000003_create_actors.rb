@@ -19,7 +19,6 @@ class CreateActors < ActiveRecord::Migration[8.1]
     add_index :actors, :actor_type
     add_index :actors, :country
     add_index :actors, :active
-    add_index :actors, [:country, :actor_type, :active], name: 'index_actors_on_country_type_active'
+    add_index :actors, [ :country, :actor_type, :active ], name: 'index_actors_on_country_type_active'
   end
 end
-

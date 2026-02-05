@@ -84,7 +84,7 @@ RSpec.describe UserAnswer, type: :model do
         let(:question) { create(:question, question_type: 'tradeoff_slider') }
 
         it 'is valid for values 0-100' do
-          [0, 50, 100].each do |value|
+          [ 0, 50, 100 ].each do |value|
             answer = build(:user_answer, question: question, answer_data: { value: value })
             expect(answer).to be_valid
           end

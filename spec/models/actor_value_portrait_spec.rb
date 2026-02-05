@@ -8,7 +8,7 @@ RSpec.describe ActorValuePortrait, type: :model do
 
   describe 'validations' do
     subject { build(:actor_value_portrait) }
-    
+
     it { should validate_presence_of(:position) }
     it { should validate_numericality_of(:position).is_greater_than_or_equal_to(-100) }
     it { should validate_numericality_of(:position).is_less_than_or_equal_to(100) }
@@ -21,7 +21,7 @@ RSpec.describe ActorValuePortrait, type: :model do
       actor = create(:actor)
       dimension = create(:value_dimension)
       create(:actor_value_portrait, actor: actor, value_dimension: dimension)
-      
+
       duplicate = build(:actor_value_portrait, actor: actor, value_dimension: dimension)
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:actor_id]).to be_present
@@ -147,4 +147,3 @@ RSpec.describe ActorValuePortrait, type: :model do
     end
   end
 end
-

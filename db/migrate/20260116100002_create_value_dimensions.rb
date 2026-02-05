@@ -10,13 +10,12 @@ class CreateValueDimensions < ActiveRecord::Migration[8.1]
       t.text :right_description
       t.integer :position, null: false, default: 0
       t.boolean :active, default: true, null: false
-      
+
       t.timestamps
     end
-    
+
     add_index :value_dimensions, :key, unique: true
     add_index :value_dimensions, :position
     add_index :value_dimensions, :active
   end
 end
-

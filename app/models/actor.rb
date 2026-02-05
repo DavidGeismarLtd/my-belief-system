@@ -15,22 +15,22 @@ class Actor < ApplicationRecord
   # Scopes
   scope :active, -> { where(active: true) }
   scope :by_country, ->(country) { where(country: country) }
-  scope :parties, -> { where(actor_type: 'party') }
-  scope :personalities, -> { where(actor_type: 'personality') }
-  scope :organizations, -> { where(actor_type: 'organization') }
+  scope :parties, -> { where(actor_type: "party") }
+  scope :personalities, -> { where(actor_type: "personality") }
+  scope :organizations, -> { where(actor_type: "organization") }
   scope :recent, -> { order(created_at: :desc) }
 
   # Instance Methods
   def party?
-    actor_type == 'party'
+    actor_type == "party"
   end
 
   def personality?
-    actor_type == 'personality'
+    actor_type == "personality"
   end
 
   def organization?
-    actor_type == 'organization'
+    actor_type == "organization"
   end
 
   def display_type
@@ -38,7 +38,7 @@ class Actor < ApplicationRecord
   end
 
   def initials
-    return '' if name.blank?
+    return "" if name.blank?
 
     name.split.map { |word| word[0] }.join.upcase
   end
@@ -56,12 +56,12 @@ class Actor < ApplicationRecord
   def default_avatar_url
     # Placeholder avatar based on actor type
     case actor_type
-    when 'party'
-      'https://ui-avatars.com/api/?name=' + CGI.escape(name) + '&background=3B82F6&color=fff&size=200'
-    when 'personality'
-      'https://ui-avatars.com/api/?name=' + CGI.escape(name) + '&background=10B981&color=fff&size=200'
-    when 'organization'
-      'https://ui-avatars.com/api/?name=' + CGI.escape(name) + '&background=8B5CF6&color=fff&size=200'
+    when "party"
+      "https://ui-avatars.com/api/?name=" + CGI.escape(name) + "&background=3B82F6&color=fff&size=200"
+    when "personality"
+      "https://ui-avatars.com/api/?name=" + CGI.escape(name) + "&background=10B981&color=fff&size=200"
+    when "organization"
+      "https://ui-avatars.com/api/?name=" + CGI.escape(name) + "&background=8B5CF6&color=fff&size=200"
     end
   end
 end

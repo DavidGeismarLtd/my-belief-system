@@ -104,4 +104,3 @@ module ValuePortrait
     end
   end
 end
-

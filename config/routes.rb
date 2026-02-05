@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   get "dashboard", to: "dashboard#index"
 
   # Actors
-  resources :actors, only: [:index, :show]
+  resources :actors, only: [ :index, :show ]
 
   # Value Portrait
   get "my-values", to: "value_portraits#show"

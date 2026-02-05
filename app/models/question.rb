@@ -37,7 +37,7 @@ class Question < ApplicationRecord
   def average_answer_value
     return nil unless user_answers.any?
 
-    values = user_answers.map { |a| a.answer_data['value'] }.compact
+    values = user_answers.map { |a| a.answer_data["value"] }.compact
     return nil if values.empty?
 
     values.sum.to_f / values.size
@@ -45,27 +45,27 @@ class Question < ApplicationRecord
 
   def difficulty_label
     case difficulty_score
-    when 1..2 then 'easy'
-    when 3 then 'medium'
-    when 4..5 then 'hard'
-    else 'unknown'
+    when 1..2 then "easy"
+    when 3 then "medium"
+    when 4..5 then "hard"
+    else "unknown"
     end
   end
 
   def direct_value?
-    question_type == 'direct_value'
+    question_type == "direct_value"
   end
 
   def policy_preference?
-    question_type == 'policy_preference'
+    question_type == "policy_preference"
   end
 
   def tradeoff_slider?
-    question_type == 'tradeoff_slider'
+    question_type == "tradeoff_slider"
   end
 
   def dilemma?
-    question_type == 'dilemma'
+    question_type == "dilemma"
   end
 
   def to_s

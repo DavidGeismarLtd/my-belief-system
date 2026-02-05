@@ -21,10 +21,10 @@ class UserValuePortrait < ApplicationRecord
   }
 
   # Scopes
-  scope :high_confidence, -> { where('confidence >= ?', 70) }
-  scope :low_confidence, -> { where('confidence < ?', 50) }
-  scope :strong_position, -> { where('ABS(position) >= ?', 50) }
-  scope :moderate_position, -> { where('ABS(position) < ?', 50) }
+  scope :high_confidence, -> { where("confidence >= ?", 70) }
+  scope :low_confidence, -> { where("confidence < ?", 50) }
+  scope :strong_position, -> { where("ABS(position) >= ?", 50) }
+  scope :moderate_position, -> { where("ABS(position) < ?", 50) }
 
   # Instance Methods
   def left_leaning?
@@ -57,7 +57,7 @@ class UserValuePortrait < ApplicationRecord
 
   def position_label
     if centrist?
-      'Centrist'
+      "Centrist"
     elsif left_leaning?
       strong? ? "Strong #{value_dimension.left_pole}" : "Moderate #{value_dimension.left_pole}"
     else

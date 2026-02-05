@@ -21,10 +21,10 @@ class ActorValuePortrait < ApplicationRecord
   }
 
   # Scopes
-  scope :high_confidence, -> { where('confidence >= ?', 70) }
-  scope :low_confidence, -> { where('confidence < ?', 50) }
-  scope :strong_position, -> { where('ABS(position) >= ?', 50) }
-  scope :moderate_position, -> { where('ABS(position) < ?', 50) }
+  scope :high_confidence, -> { where("confidence >= ?", 70) }
+  scope :low_confidence, -> { where("confidence < ?", 50) }
+  scope :strong_position, -> { where("ABS(position) >= ?", 50) }
+  scope :moderate_position, -> { where("ABS(position) < ?", 50) }
 
   # Instance Methods
   def left_leaning?
@@ -55,4 +55,3 @@ class ActorValuePortrait < ApplicationRecord
     confidence.present? && confidence < 50
   end
 end
-

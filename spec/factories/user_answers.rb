@@ -12,7 +12,7 @@ FactoryBot.define do
     end
 
     trait :direct_value do
-      association :question, factory: [:question, :direct_value]
+      association :question, factory: [ :question, :direct_value ]
       answer_data do
         {
           value: rand(1..5),
@@ -22,17 +22,17 @@ FactoryBot.define do
     end
 
     trait :policy_preference do
-      association :question, factory: [:question, :policy_preference]
+      association :question, factory: [ :question, :policy_preference ]
       answer_data do
         {
-          value: ['left', 'right'].sample,
+          value: [ 'left', 'right' ].sample,
           time_spent_seconds: rand(5..60)
         }
       end
     end
 
     trait :tradeoff_slider do
-      association :question, factory: [:question, :tradeoff_slider]
+      association :question, factory: [ :question, :tradeoff_slider ]
       answer_data do
         {
           value: rand(0..100),
@@ -42,10 +42,10 @@ FactoryBot.define do
     end
 
     trait :dilemma do
-      association :question, factory: [:question, :dilemma]
+      association :question, factory: [ :question, :dilemma ]
       answer_data do
         {
-          value: ['A', 'B'].sample,
+          value: [ 'A', 'B' ].sample,
           time_spent_seconds: rand(5..60),
           reasoning: 'Test reasoning'
         }
@@ -71,4 +71,3 @@ FactoryBot.define do
     end
   end
 end
-

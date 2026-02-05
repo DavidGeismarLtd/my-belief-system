@@ -8,14 +8,13 @@ class CreateQuestions < ActiveRecord::Migration[8.1]
       t.integer :position, null: false, default: 0
       t.integer :difficulty_score, default: 1
       t.boolean :active, default: true, null: false
-      
+
       t.timestamps
     end
-    
+
     add_index :questions, :question_type
     add_index :questions, :position
     add_index :questions, :active
-    add_index :questions, [:value_dimension_id, :position]
+    add_index :questions, [ :value_dimension_id, :position ]
   end
 end
-

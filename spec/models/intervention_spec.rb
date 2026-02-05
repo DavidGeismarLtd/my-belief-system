@@ -145,4 +145,3 @@ RSpec.describe Intervention, type: :model do
     end
   end
 end
-

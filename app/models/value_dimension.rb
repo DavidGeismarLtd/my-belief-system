@@ -37,7 +37,7 @@ class ValueDimension < ApplicationRecord
   end
 
   def poles
-    [left_pole, right_pole]
+    [ left_pole, right_pole ]
   end
 
   def to_s

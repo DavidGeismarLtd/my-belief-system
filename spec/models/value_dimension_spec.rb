@@ -117,7 +117,7 @@ RSpec.describe ValueDimension, type: :model do
     let(:dimension) { create(:value_dimension, left_pole: 'Left', right_pole: 'Right') }
 
     it 'returns an array of left and right poles' do
-      expect(dimension.poles).to eq(['Left', 'Right'])
+      expect(dimension.poles).to eq([ 'Left', 'Right' ])
     end
   end
 

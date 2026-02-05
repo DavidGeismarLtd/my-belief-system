@@ -16,22 +16,22 @@ class Intervention < ApplicationRecord
   scope :recent, -> { order(published_at: :desc) }
   scope :by_type, ->(type) { where(intervention_type: type) }
   scope :by_platform, ->(platform) { where(source_platform: platform) }
-  scope :tweets, -> { where(intervention_type: 'tweet') }
-  scope :videos, -> { where(intervention_type: 'video') }
-  scope :speeches, -> { where(intervention_type: 'speech') }
-  scope :declarations, -> { where(intervention_type: 'declaration') }
+  scope :tweets, -> { where(intervention_type: "tweet") }
+  scope :videos, -> { where(intervention_type: "video") }
+  scope :speeches, -> { where(intervention_type: "speech") }
+  scope :declarations, -> { where(intervention_type: "declaration") }
 
   # Instance Methods
   def tweet?
-    intervention_type == 'tweet'
+    intervention_type == "tweet"
   end
 
   def video?
-    intervention_type == 'video'
+    intervention_type == "video"
   end
 
   def declaration?
-    intervention_type == 'declaration'
+    intervention_type == "declaration"
   end
 
   def display_type
@@ -40,12 +40,12 @@ class Intervention < ApplicationRecord
 
   def platform_icon
     case source_platform
-    when 'twitter' then '𝕏'
-    when 'youtube' then '▶️'
-    when 'facebook' then 'f'
-    when 'instagram' then '📷'
-    when 'press_release' then '📰'
-    else '🔗'
+    when "twitter" then "𝕏"
+    when "youtube" then "▶️"
+    when "facebook" then "f"
+    when "instagram" then "📷"
+    when "press_release" then "📰"
+    else "🔗"
     end
   end
 
