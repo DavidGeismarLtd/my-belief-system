@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Actor, type: :model do
   describe 'associations' do
     it { should have_many(:interventions).dependent(:destroy) }
+    it { should have_many(:actor_value_portraits).dependent(:destroy) }
+    it { should have_many(:value_dimensions).through(:actor_value_portraits) }
   end
 
   describe 'validations' do
@@ -120,9 +122,9 @@ RSpec.describe Actor, type: :model do
 
   describe 'metadata' do
     it 'stores and retrieves metadata as JSON' do
-      actor = create(:actor, metadata: { founded: 1828, ideology: ['Progressivism'] })
+      actor = create(:actor, metadata: { founded: 1828, ideology: [ 'Progressivism' ] })
       expect(actor.metadata['founded']).to eq(1828)
-      expect(actor.metadata['ideology']).to eq(['Progressivism'])
+      expect(actor.metadata['ideology']).to eq([ 'Progressivism' ])
     end
   end
 
@@ -135,4 +137,3 @@ RSpec.describe Actor, type: :model do
     end
   end
 end
-

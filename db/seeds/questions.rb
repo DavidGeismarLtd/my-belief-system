@@ -18,7 +18,7 @@ questions = [
     dimension: 'liberty_authority',
     text: 'Individual freedom should be prioritized over collective security.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 1,
     difficulty_score: 1
   },
@@ -26,7 +26,7 @@ questions = [
     dimension: 'liberty_authority',
     text: 'The government should have the authority to restrict certain freedoms to maintain social order.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 2,
     difficulty_score: 2
   },
@@ -44,7 +44,7 @@ questions = [
     dimension: 'economic_equality',
     text: 'The government should redistribute wealth to reduce economic inequality.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 4,
     difficulty_score: 1
   },
@@ -52,7 +52,7 @@ questions = [
     dimension: 'economic_equality',
     text: 'Free markets, with minimal regulation, are the best way to create prosperity.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 5,
     difficulty_score: 2
   },
@@ -70,7 +70,7 @@ questions = [
     dimension: 'tradition_progress',
     text: 'Society should preserve traditional values and institutions.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 7,
     difficulty_score: 1
   },
@@ -78,7 +78,7 @@ questions = [
     dimension: 'tradition_progress',
     text: 'Rapid social change is necessary to address modern challenges.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 8,
     difficulty_score: 2
   },
@@ -96,7 +96,7 @@ questions = [
     dimension: 'nationalism_globalism',
     text: 'National interests should always come before international cooperation.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 10,
     difficulty_score: 1
   },
@@ -104,7 +104,7 @@ questions = [
     dimension: 'nationalism_globalism',
     text: 'International organizations should have more power to address global challenges.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 11,
     difficulty_score: 2
   },
@@ -122,7 +122,7 @@ questions = [
     dimension: 'security_privacy',
     text: 'Government surveillance is acceptable if it prevents terrorism.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 13,
     difficulty_score: 1
   },
@@ -130,7 +130,7 @@ questions = [
     dimension: 'security_privacy',
     text: 'Personal privacy should never be compromised, even for security reasons.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 14,
     difficulty_score: 2
   },
@@ -148,7 +148,7 @@ questions = [
     dimension: 'meritocracy_equity',
     text: 'Success should be based purely on individual merit and effort.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 16,
     difficulty_score: 1
   },
@@ -156,7 +156,7 @@ questions = [
     dimension: 'meritocracy_equity',
     text: 'Society should actively work to correct historical inequalities.',
     question_type: 'direct_value',
-    options: { scale: 5, labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'] },
+    options: { scale: 5, labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ] },
     position: 17,
     difficulty_score: 2
   },

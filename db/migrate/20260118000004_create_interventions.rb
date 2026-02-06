@@ -16,7 +16,6 @@ class CreateInterventions < ActiveRecord::Migration[8.1]
     add_index :interventions, :intervention_type
     add_index :interventions, :published_at
     add_index :interventions, :active
-    add_index :interventions, [:actor_id, :published_at], name: 'index_interventions_on_actor_and_published'
+    add_index :interventions, [ :actor_id, :published_at ], name: 'index_interventions_on_actor_and_published'
   end
 end
-

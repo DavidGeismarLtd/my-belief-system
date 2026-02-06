@@ -154,4 +154,3 @@ RSpec.describe 'shared/_stat_grid.html.erb', type: :view do
     end
   end
 end
-

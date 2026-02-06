@@ -1,10 +1,10 @@
-class UserValuePortrait < ApplicationRecord
+class ActorValuePortrait < ApplicationRecord
   # Associations
-  belongs_to :user
+  belongs_to :actor
   belongs_to :value_dimension
 
   # Validations
-  validates :user_id, uniqueness: { scope: :value_dimension_id }
+  validates :actor_id, uniqueness: { scope: :value_dimension_id }
   validates :position, presence: true, numericality: {
     greater_than_or_equal_to: -100,
     less_than_or_equal_to: 100
@@ -53,19 +53,5 @@ class UserValuePortrait < ApplicationRecord
 
   def low_confidence?
     confidence.present? && confidence < 50
-  end
-
-  def position_label
-    if centrist?
-      "Centrist"
-    elsif left_leaning?
-      strong? ? "Strong #{value_dimension.left_pole}" : "Moderate #{value_dimension.left_pole}"
-    else
-      strong? ? "Strong #{value_dimension.right_pole}" : "Moderate #{value_dimension.right_pole}"
-    end
-  end
-
-  def to_s
-    "#{user.email} - #{value_dimension.name}: #{position}"
   end
 end

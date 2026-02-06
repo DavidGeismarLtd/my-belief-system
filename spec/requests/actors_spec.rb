@@ -9,18 +9,16 @@ RSpec.describe "Actors", type: :request do
     create(
       :actor,
       name: 'Democratic Party',
-      actor_type: 'party',
-      metadata: {
-        'value_positions' => {
-          dimension1.id.to_s => -60,
-          dimension2.id.to_s => 40,
-          dimension3.id.to_s => -20
-        }
-      }
+      actor_type: 'party'
     )
   end
 
   before do
+    # Create actor value portraits
+    create(:actor_value_portrait, actor: actor, value_dimension: dimension1, position: -60)
+    create(:actor_value_portrait, actor: actor, value_dimension: dimension2, position: 40)
+    create(:actor_value_portrait, actor: actor, value_dimension: dimension3, position: -20)
+
     # Create user value portraits for comparison
     create(:user_value_portrait, user: user, value_dimension: dimension1, position: -50)
     create(:user_value_portrait, user: user, value_dimension: dimension2, position: 30)
@@ -116,8 +114,8 @@ RSpec.describe "Actors", type: :request do
       end
     end
 
-    describe 'actor value positions from metadata' do
-      it 'retrieves actor positions from metadata' do
+    describe 'actor value positions' do
+      it 'retrieves actor positions from ActorValuePortrait' do
         actor_data = assigns(:actor)
         dimension_data = actor_data[:dimensions].find { |d| d[:name] == 'Individual Liberty vs Collective Authority' }
         expect(dimension_data[:actor_position]).to eq(-60)

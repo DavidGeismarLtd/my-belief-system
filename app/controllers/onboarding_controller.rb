@@ -1,5 +1,5 @@
 class OnboardingController < ApplicationController
-  COUNTRIES = ['United States', 'France', 'United Kingdom', 'Germany', 'Canada'].freeze
+  COUNTRIES = [ "United States", "France", "United Kingdom", "Germany", "Canada" ].freeze
 
   def start
     # Reset session answers and show country selection

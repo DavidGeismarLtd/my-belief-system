@@ -58,7 +58,7 @@ RSpec.describe 'Dashboard', type: :request do
       end
 
       it 'includes capitalized type' do
-        expect(actor_data[:type]).to be_in(['Party', 'Personality', 'Organization'])
+        expect(actor_data[:type]).to be_in([ 'Party', 'Personality', 'Organization' ])
       end
 
       it 'includes location' do
@@ -75,11 +75,11 @@ RSpec.describe 'Dashboard', type: :request do
       end
 
       it 'includes alignment_label' do
-        expect(actor_data[:alignment_label]).to be_in(['Strong', 'Moderate', 'Weak', 'Misalignment'])
+        expect(actor_data[:alignment_label]).to be_in([ 'Strong', 'Moderate', 'Weak', 'Misalignment' ])
       end
 
       it 'includes alignment_color' do
-        expect(actor_data[:alignment_color]).to be_in(['green', 'blue', 'amber', 'red'])
+        expect(actor_data[:alignment_color]).to be_in([ 'green', 'blue', 'amber', 'red' ])
       end
 
       it 'includes strong_dimensions array' do
@@ -91,7 +91,7 @@ RSpec.describe 'Dashboard', type: :request do
       end
 
       it 'includes trend' do
-        expect(actor_data[:trend]).to be_in(['up', 'down', 'stable'])
+        expect(actor_data[:trend]).to be_in([ 'up', 'down', 'stable' ])
       end
 
       it 'includes trend_value' do

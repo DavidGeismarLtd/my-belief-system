@@ -1,0 +1,21 @@
+# Lefthook configuration for automatic linting and formatting
+# See: https://github.com/evilmartians/lefthook
+
+pre-commit:
+  parallel: true
+  commands:
+    rubocop:
+      glob: "*.rb"
+      run: bundle exec rubocop --autocorrect {staged_files}
+      stage_fixed: true
+
+    rubocop-seeds:
+      glob: "db/seeds/**/*.rb"
+      run: bundle exec rubocop --autocorrect {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    tests:
+      run: bundle exec rspec
+

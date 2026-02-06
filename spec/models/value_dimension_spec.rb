@@ -5,6 +5,8 @@ RSpec.describe ValueDimension, type: :model do
     it { should have_many(:questions).dependent(:destroy) }
     it { should have_many(:user_value_portraits).dependent(:destroy) }
     it { should have_many(:users).through(:user_value_portraits) }
+    it { should have_many(:actor_value_portraits).dependent(:destroy) }
+    it { should have_many(:actors).through(:actor_value_portraits) }
   end
 
   describe 'validations' do
@@ -115,7 +117,7 @@ RSpec.describe ValueDimension, type: :model do
     let(:dimension) { create(:value_dimension, left_pole: 'Left', right_pole: 'Right') }
 
     it 'returns an array of left and right poles' do
-      expect(dimension.poles).to eq(['Left', 'Right'])
+      expect(dimension.poles).to eq([ 'Left', 'Right' ])
     end
   end
 

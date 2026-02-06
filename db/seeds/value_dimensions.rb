@@ -93,4 +93,3 @@ dimensions.each do |dim_data|
 end
 
 puts "  ✅ Created #{ValueDimension.count} value dimensions"
-

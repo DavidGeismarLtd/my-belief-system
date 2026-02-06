@@ -8,7 +8,7 @@ RSpec.describe UserValuePortrait, type: :model do
 
   describe 'validations' do
     subject { build(:user_value_portrait) }
-    
+
     it { should validate_presence_of(:position) }
     it { should validate_numericality_of(:position).is_greater_than_or_equal_to(-100) }
     it { should validate_numericality_of(:position).is_less_than_or_equal_to(100) }
@@ -21,7 +21,7 @@ RSpec.describe UserValuePortrait, type: :model do
       user = create(:user)
       dimension = create(:value_dimension)
       create(:user_value_portrait, user: user, value_dimension: dimension)
-      
+
       duplicate = build(:user_value_portrait, user: user, value_dimension: dimension)
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:user_id]).to be_present
@@ -92,7 +92,7 @@ RSpec.describe UserValuePortrait, type: :model do
     it 'returns true when absolute position < 20' do
       portrait = build(:user_value_portrait, position: 15)
       expect(portrait.centrist?).to be true
-      
+
       portrait.position = -15
       expect(portrait.centrist?).to be true
     end
@@ -107,7 +107,7 @@ RSpec.describe UserValuePortrait, type: :model do
     it 'returns true when absolute position >= 50' do
       portrait = build(:user_value_portrait, position: 60)
       expect(portrait.strong?).to be true
-      
+
       portrait.position = -60
       expect(portrait.strong?).to be true
     end
@@ -122,7 +122,7 @@ RSpec.describe UserValuePortrait, type: :model do
     it 'returns true when 20 <= absolute position < 50' do
       portrait = build(:user_value_portrait, position: 30)
       expect(portrait.moderate?).to be true
-      
+
       portrait.position = -30
       expect(portrait.moderate?).to be true
     end
@@ -206,9 +206,8 @@ RSpec.describe UserValuePortrait, type: :model do
       user = create(:user, email: 'test@example.com')
       dimension = create(:value_dimension, name: 'Test Dimension')
       portrait = create(:user_value_portrait, user: user, value_dimension: dimension, position: 50)
-      
+
       expect(portrait.to_s).to eq('test@example.com - Test Dimension: 50.0')
     end
   end
 end
-

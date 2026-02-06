@@ -6,7 +6,7 @@ FactoryBot.define do
     options do
       {
         scale: 5,
-        labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree']
+        labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ]
       }
     end
     sequence(:position)
@@ -34,7 +34,7 @@ FactoryBot.define do
       options do
         {
           scale: 5,
-          labels: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree']
+          labels: [ 'Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree' ]
         }
       end
     end
@@ -77,4 +77,3 @@ FactoryBot.define do
     end
   end
 end
-
